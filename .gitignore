@@ -5,6 +5,7 @@ node_modules/
 build/
 dist/
 .git/
+data/
 
 # Archivos de caché y logs
 logs/
