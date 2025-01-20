@@ -1,0 +1,15 @@
+{
+  "name": "store-microservices", // Nombre del contenedor
+  "dockerComposeFile": ["../docker-compose.yml"], // Apunta al archivo docker-compose
+  "service": "devcontainer", // El servicio que se abrirá por defecto
+  "workspaceFolder": "/app", // Carpeta de trabajo dentro del contenedor
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.shell.linux": "/bin/zsh"
+      }
+    }
+  },
+  "remoteUser": "root" // Usuario remoto dentro del contenedor
+}

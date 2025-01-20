@@ -1,0 +1,39 @@
+# Node.js dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+
+# Logs
+*.log
+
+# Configuración de IDE y editor
+.vscode
+.idea
+*.sublime-project
+*.sublime-workspace
+
+# Archivos generados por el sistema operativo
+.DS_Store
+Thumbs.db
+
+# Archivos de entorno y configuraciones locales
+.env
+.env.local
+.env.*.local
+
+# Archivos temporales
+tmp
+dist
+build
+
+# Archivos de Docker
+docker-compose.override.yml
+Dockerfile*
+
+# Dependencias de desarrollo
+*.tgz
+
+# Archivos de pruebas
+coverage

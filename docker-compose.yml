@@ -1,0 +1,107 @@
+services:
+  devcontainer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+    networks:
+      - auth-service
+      - gateway
+
+  gateway:
+    build:
+      context: ./gateway
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    volumes:
+      - ./gateway:/app
+    depends_on:
+      - auth-service
+    environment:
+      - AUTH_SERVICE_URL=http://auth-service:4001
+      - PORT=4000
+    networks:
+      - auth-service
+      - gateway
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    ports:
+      - 4001:4001
+    volumes:
+      - ./auth-service:/app
+    depends_on:
+      - mongodb
+      - mysql
+      - redis
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/auth-service
+      - DB_HOST=mysql
+      - DB_USER=root
+      - DB_PASSWORD=root
+      - DB_NAME=store
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=
+      - CORS_FRONTEND=http://localhost:4200
+      - CORS_BACKEND=http://gateway:4000
+      - PORT=4001
+    networks:
+      - auth-service
+
+  shared:
+    build:
+      context: ./shared
+      dockerfile: Dockerfile
+    volumes:
+      - ./shared:/app
+    networks:
+      - auth-service
+      - gateway
+    environment:
+      - CORS_BACKEND=http://gateway:4000
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - 27017:27017
+    volumes:
+      - ./data/mongodb:/data/db
+    networks:
+      - auth-service
+    logging:
+      driver: "none"
+
+  mysql:
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root
+    networks:
+      - auth-service
+    logging:
+      driver: "none"
+
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+    volumes:
+      - ./data/redis:/data
+    networks:
+      - auth-service
+    logging:
+      driver: "none"
+
+networks:
+  auth-service:
+    driver: bridge
+  gateway:
+    driver: bridge
