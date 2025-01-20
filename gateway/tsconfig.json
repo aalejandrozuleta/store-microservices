@@ -17,10 +17,9 @@
       "@middlewares/*": ["middlewares/*"],
       "@helpers/*": ["helpers/*"],
       "@config/*": ["config/*"],
-      "@shared/*": ["../shared/*"],
-
+      "@shared/*": ["../shared/*"]
     }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*.ts"],
   "exclude": ["node_modules","dist"]
 }

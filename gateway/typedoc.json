@@ -1,0 +1,8 @@
+{
+  "out": "docs",
+  "exclude": "**/test/**",
+  "theme": "default",
+  "readme": "README.md",
+  "excludePrivate": true,
+  "excludeProtected": true,
+}
