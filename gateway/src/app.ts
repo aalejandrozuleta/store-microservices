@@ -27,7 +27,7 @@ app.use(morgan('combined'));
 // Limitar la tasa de solicitudes
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutos
-  max: 20, // Limitar a 20 solicitudes por IP
+  max: 100, // Limitar a 100 solicitudes por IP
 });
 app.use(limiter);
 
@@ -39,7 +39,7 @@ app.use('/api/auth', routerAuthService);
 
 
 // Puerto de escucha
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || "";
 app.listen(PORT, () => {
   console.info(`Gateway escuchando en el puerto ${PORT}`);
 });
