@@ -4,7 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import checkDb from './healtDb'; // Importa la función que verifica la conexión con la base de datos
-import { logger, morganMiddleware } from './logger'; // Importa el logger personalizado
+import { morganMiddleware } from './logger'; // Importa el logger personalizado
 
 export const app = express();
 

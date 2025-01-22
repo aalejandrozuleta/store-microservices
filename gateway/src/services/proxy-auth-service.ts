@@ -21,16 +21,17 @@ import { Request } from 'express';
  * const response = await proxyRequest(req, 'http://auth-service');
  * res.status(response.status).json(response.data);
  */
-export const proxyRequest = async (req: Request, serviceUrl: string) => {
+export const proxyRequestUser = async (req: Request, serviceUrl: string) => {
+  
   try {
     // Clonar los headers y eliminar los que no son necesarios
     const headers = { ...req.headers };
     delete headers.host;
     delete headers['content-length'];
-
+    
     const response = await axios({
       method: req.method,
-      url: `${serviceUrl}${req.originalUrl.replace('/api/auth', '')}`, // Ajuste dinámico de la URL
+      url: `${serviceUrl}/auth/user${req.originalUrl.replace('/api/auth', '')}`, // Ajuste de la URL
       headers,
       data: req.body,
     });

@@ -1,5 +1,9 @@
 import { Router } from 'express';
 export const routerAuthService = Router();
 
-import { authController } from '@controller/auth-services/auth-service';
-routerAuthService.use('/lender/register', authController);
+
+// usuario
+import { userController } from '@controller/auth-services/user.controller-auth';
+routerAuthService.use('/register', userController);
+
+// administrador

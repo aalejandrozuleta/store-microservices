@@ -4,28 +4,20 @@
   "main": "src/app.ts",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node-dev tsconfig-paths/register --respawn --transpile-only src/app.ts",
+    "dev": "ts-node-dev -r tsconfig-paths/register --respawn --transpile-only src/app.ts",
     "docs": "typedoc --out docs --entryPointStrategy expand src/**/*.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
-  "_moduleAliases": {
-    "@routes": "dist/routes",
-    "@controller": "dist/controller",
-    "@services": "dist/services",
-    "@middlewares": "dist/middlewares",
-    "@helpers": "dist/helpers",
-    "@config": "dist/config",
-    "@shared": "../shared/dist/"
-  },
   "dependencies": {
     "axios": "^1.7.9",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "express-rate-limit": "^7.5.0",
+    "helmet": "^8.0.0",
     "jsonwebtoken": "^9.0.2",
     "module-alias": "^2.2.3",
     "morgan": "^1.10.0",
@@ -45,5 +37,14 @@
     "tsdoc": "^0.0.4",
     "typedoc": "^0.27.6",
     "typescript": "^5.7.3"
+  },
+  "_moduleAliases": {
+    "@routes": "dist/routes",
+    "@controller": "dist/controller",
+    "@services": "dist/services",
+    "@middlewares": "dist/middlewares",
+    "@helpers": "dist/helpers",
+    "@config": "dist/config",
+    "@shared": "../shared/dist/"
   }
 }

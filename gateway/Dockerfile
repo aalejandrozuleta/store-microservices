@@ -2,7 +2,7 @@
 FROM node:22
 
 # Directorio de trabajo dentro del contenedor
-WORKDIR /app/gateway
+WORKDIR /app
 
 # Copiar el archivo package.json y package-lock.json (o yarn.lock) para instalar dependencias
 COPY package*.json ./

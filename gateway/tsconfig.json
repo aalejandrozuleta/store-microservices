@@ -16,10 +16,9 @@
       "@services/*": ["services/*"],
       "@middlewares/*": ["middlewares/*"],
       "@helpers/*": ["helpers/*"],
-      "@config/*": ["config/*"],
-      "@shared/*": ["../shared/*"]
+      "@config/*": ["config/*"]
     }
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules","dist"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
 }

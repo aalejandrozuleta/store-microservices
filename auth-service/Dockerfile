@@ -2,7 +2,7 @@
 FROM node:22
 
 # Directorio de trabajo dentro del contenedor
-WORKDIR /app/auth-service
+WORKDIR /app
 
 # Copiar el archivo package.json y package-lock.json (o yarn.lock) para instalar dependencias
 COPY package*.json ./
@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Exponer el puerto en el que la app escuchará
-EXPOSE 4001
+EXPOSE 4002
 
 # Habilitar el modo de desarrollo con ts-node
 CMD ["npm", "run", "dev"]

@@ -1,107 +1,140 @@
+version: '3.8'
+
 services:
+  # Servicio devcontainer
   devcontainer:
     build:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - .:/app
+      - .:/app  # Monta el directorio actual en el contenedor
     networks:
       - auth-service
       - gateway
+      - shared
 
+  # Servicio Gateway
   gateway:
     build:
       context: ./gateway
       dockerfile: Dockerfile
     ports:
-      - 4000:4000
+      - 4000:4000  # Expone el puerto 4000 para el servicio Gateway
     volumes:
-      - ./gateway:/app
-    depends_on:
-      - auth-service
+      - ./gateway:/app  # Monta el código del servicio Gateway
+      - /app/node_modules  # Monta un volumen para node_modules para evitar sobrescritura
+
     environment:
-      - AUTH_SERVICE_URL=http://auth-service:4001
-      - PORT=4000
+      - AUTH_SERVICE_URL=http://auth-service:4002  # URL del servicio de autenticación
+      - SHARED_SERVICE_URL=http://shared:4001  # URL del servicio compartido
+      - PORT=4000  # Puerto en el que escucha el servicio Gateway
+      - CORS_FRONTEND=http://localhost:4200  # Origen para habilitar CORS
+    depends_on:
+      - mongodb
+      - mysql
+      - redis  # Gateway depende de servicios base
     networks:
       - auth-service
       - gateway
+      - shared
 
+  # Servicio Auth-Service
   auth-service:
     build:
       context: ./auth-service
       dockerfile: Dockerfile
     ports:
-      - 4001:4001
+      - 4002:4002  # Expone el puerto 4002 para el servicio Auth
     volumes:
-      - ./auth-service:/app
-    depends_on:
-      - mongodb
-      - mysql
-      - redis
+      - ./auth-service:/app  # Monta el código del servicio Auth
+      - /app/node_modules  # Evita reemplazos de node_modules
     environment:
-      - MONGO_URI=mongodb://mongodb:27017/auth-service
-      - DB_HOST=mysql
-      - DB_USER=root
-      - DB_PASSWORD=root
-      - DB_NAME=store
-      - REDIS_HOST=redis
-      - REDIS_PORT=6379
-      - REDIS_PASSWORD=
-      - CORS_FRONTEND=http://localhost:4200
-      - CORS_BACKEND=http://gateway:4000
-      - PORT=4001
+      - MONGO_URI=mongodb://mongodb:27017/auth-service  # URI de conexión a MongoDB
+      - DB_HOST=mysql  # Host de MySQL
+      - DB_USER=root  # Usuario de MySQL
+      - DB_PASSWORD=root  # Contraseña de MySQL
+      - DB_NAME=clothing_store  # Nombre de la base de datos
+      - REDIS_HOST=redis  # Host de Redis
+      - REDIS_PORT=6379  # Puerto de Redis
+      - REDIS_PASSWORD=  # Contraseña de Redis (vacía por ahora)
+      - CORS_BACKEND=http://gateway:4000  # Origen para habilitar CORS en el backend
+      - PORT=4002  # Puerto en el que escucha el servicio Auth
     networks:
       - auth-service
+      - gateway  # Se agrega a la red de Gateway para poder comunicarse con él
 
+  # Servicio Shared
   shared:
     build:
       context: ./shared
       dockerfile: Dockerfile
     volumes:
-      - ./shared:/app
-    networks:
-      - auth-service
-      - gateway
-    environment:
-      - CORS_BACKEND=http://gateway:4000
+      - ./shared:/app  # Monta el código del servicio Shared
+      - /app/node_modules  # Monta un volumen para node_modules para evitar sobrescritura
 
+    ports:
+      - 4001:4001  # Expone el puerto 4001 para el servicio Shared
+    networks:
+      - gateway  # Shared solo está en la red de Gateway
+      - shared  # También está en su propia red para posibles servicios internos
+    environment:
+      - CORS_BACKEND=http://gateway:4000  # Origen para habilitar CORS en el backend
+      - REDIS_HOST=redis  # Host de Redis
+      - REDIS_PORT=6379  # Puerto de Redis
+      - REDIS_PASSWORD=  # Contraseña de Redis (vacía por ahora)
+      - PORT=4001  # Puerto en el que escucha el servicio Shared
+      - RESEND_API = re_eLXME658_LDMHNd5FNMq3cjJs5dGsxeZo # API de Resend
+      - FROM_RESEND = onboarding@resend.dev # Dirección de envío de correos de Resend
+  # Servicio MongoDB
   mongodb:
     image: mongo:latest
     ports:
-      - 27017:27017
+      - 27017:27017  # Expone el puerto 27017 para MongoDB
     volumes:
-      - ./data/mongodb:/data/db
+      - ./data/mongodb:/data/db  # Monta el volumen persistente para MongoDB
     networks:
-      - auth-service
+      - auth-service  # MongoDB solo está en la red auth-service para el acceso de auth-service
     logging:
-      driver: "none"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  # Servicio MySQL
   mysql:
     image: mysql:latest
     ports:
-      - 3306:3306
+      - 3306:3306  # Expone el puerto 3306 para MySQL
     volumes:
-      - ./data/mysql:/var/lib/mysql
+      - ./data/mysql:/var/lib/mysql  # Monta el volumen persistente para MySQL
     environment:
-      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_ROOT_PASSWORD=root  # Contraseña para el usuario root de MySQL
     networks:
-      - auth-service
+      - auth-service  # MySQL solo está en la red auth-service para el acceso de auth-service
     logging:
-      driver: "none"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+  # Servicio Redis
   redis:
     image: redis:latest
     ports:
-      - 6379:6379
+      - 6379:6379  # Expone el puerto 6379 para Redis
     volumes:
-      - ./data/redis:/data
+      - ./data/redis:/data  # Monta el volumen persistente para Redis
     networks:
       - auth-service
+      - shared  # Redis estará en ambas redes auth-service y shared
     logging:
-      driver: "none"
+      options:
+        max-size: "10m"
+        max-file: "3"
 
+# Definición de redes
 networks:
   auth-service:
-    driver: bridge
+    driver: bridge  # Red para servicios relacionados con autenticación y almacenamiento
   gateway:
-    driver: bridge
+    driver: bridge  # Red principal para conectar servicios a través del Gateway
+  shared:
+    driver: bridge  # Red dedicada para servicios compartidos internos

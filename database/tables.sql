@@ -10,10 +10,13 @@ CREATE TABLE roles (
 -- Tabla de Usuarios
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID único del usuario
+    name VARCHAR(255) NOT NULL, -- Nombre del usuario
     email VARCHAR(255) NOT NULL UNIQUE, -- Correo electrónico del usuario
+    birthdate DATE, -- Fecha de nacimiento
     password VARCHAR(255) NOT NULL, -- Contraseña encriptada
     role_id INT NOT NULL, -- Rol asignado al usuario
     account_status ENUM('active', 'inactive', 'suspended') DEFAULT 'active', -- Estado de la cuenta
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de registro
     FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE RESTRICT ON UPDATE CASCADE -- FK al rol
 );
 
@@ -109,3 +112,11 @@ CREATE TABLE discounts (
     discount_percentage DECIMAL(5, 2) NOT NULL, -- Porcentaje de descuento
     valid_until DATE -- Fecha límite de validez
 );
+
+
+-- Insertar roles
+INSERT INTO roles (name) VALUES
+('admin'),
+('customer'),
+('moderator'),
+('seller');

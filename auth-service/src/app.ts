@@ -9,8 +9,8 @@ import { routerUser } from '@routes/user/user.routes';
 
 //  Usar rutas
 
-app.use('/administrator', routerAdministrator);
-app.use('/user', routerUser);
+app.use('/auth/administrator', routerAdministrator);
+app.use('/auth/user', routerUser);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, res: Response) => {

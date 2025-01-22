@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+        @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #fff8dc;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1, h2 {
+            color: #1E90FF; /* Azul claro */
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        a {
+            text-decoration: none;
+            color: #1E90FF;
+            font-weight: bold;
+        }
+
+        .btn {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 25px;
+            background-color: #1E90FF;
+            color: #fff;
+            border-radius: 25px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: scale(1.05);
+            background-color: #559EE0;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            color: #1E90FF;
+            margin-right: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .feature:hover .feature-icon {
+            color: #559EE0;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0;
+                padding: 0;
+            }
+            .feature {
+                flex-direction: column;
+                text-align: left;
+            }
+            .feature-icon {
+                margin: 0 0 10px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Bienvenid@, {{name}}</h1>
+        <p>Nos alegra que formes parte de nuestra familia de moda. Explora las últimas tendencias en ropa masculina y femenina, y descubre todo lo que tenemos para ofrecerte.</p>
+        
+        <h2>Nuestras Ventajas</h2>
+        <div class="feature">
+            <p>Envío gratuito en tu primera compra</p>
+        </div>
+        <div class="feature">
+            <p>Facilidades de pago con cuotas sin interés</p>
+        </div>
+        <div class="feature">
+            <p>Devoluciones gratuitas dentro de los primeros 30 días</p>
+        </div>
+
+        <h2>Explora</h2>
+        <a href="https://turopa.vercel.app.com" class="btn">Visitar nuestro sitio web</a>
+    </div>
+
+</body>
+</html>
