@@ -36,14 +36,14 @@ export const registerService = async (user: RegisterDto) => {
     await RegisterRepository.register(user);
 
     // Enviamos un correo electrónico con el enlace de activación
-    const data:EmailsInterface = {
+    const data: EmailsInterface = {
       email: user.email,
       variables: {
         name: user.name,
       },
-      subject: "Registro exitoso",
+      subject: 'Registro exitoso',
       template: 'register.html',
-    }
+    };
 
     await sendEmails(data);
   } catch (error) {

@@ -4,7 +4,6 @@ import { UserInterface } from '@interfaces/user.interface';
 import { registerService } from '@services/user/register.service';
 import { Request, Response } from 'express';
 
-
 /**
  * Controlador para manejar el registro de nuevos usuarios.
  *
@@ -23,13 +22,12 @@ import { Request, Response } from 'express';
  *          - Si ocurre un error, se devuelve un código 500 y un mensaje de error.
  */
 
-export const registerController = async (
-  req: Request,
-  res: Response,
-) => {
-
+export const registerController = async (req: Request, res: Response) => {
   // Se obtiene el usuario del cuerpo de la solicitud, omitiendo las propiedades accountStatus y registeredAt
-  const user = req.body as Omit<UserInterface, 'accountStatus' | 'registeredAt'>;
+  const user = req.body as Omit<
+    UserInterface,
+    'accountStatus' | 'registeredAt'
+  >;
 
   // Se crea un objeto RegisterDto con los datos del usuario para pasarlo al servicio de registro
   const newUser = new RegisterDto(
@@ -37,7 +35,7 @@ export const registerController = async (
     user.email,
     user.birthdate,
     user.password,
-    user.role,
+    user.role
   );
 
   try {
@@ -64,9 +62,7 @@ export const registerController = async (
       error: errorMessage,
     });
 
-
     // Se devuelve una respuesta de error con el código de estado 500 y el mensaje de error
     res.status(500).json({ error: errorMessage });
   }
 };
-

@@ -27,7 +27,10 @@ import fs from 'fs';
  *  Resultado:
  *  "<p>Hola, Juan. Visita https://example.com para más información.</p>"
  */
-export function loadTemplate(filePath: string, variables: Record<string, string>): string {
+export function loadTemplate(
+  filePath: string,
+  variables: Record<string, string>
+): string {
   // Lee el contenido del archivo de plantilla.
   let templateContent = fs.readFileSync(filePath, 'utf8');
 

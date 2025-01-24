@@ -1,4 +1,4 @@
-import { clientRedis } from "./redisDb";
+import { clientRedis } from './redisDb';
 
 const checkDb = async () => {
   try {

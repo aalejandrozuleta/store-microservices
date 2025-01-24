@@ -65,10 +65,5 @@
     "@services": "dist/services",
     "@models": "dist/models",
     "@utils": "dist/utils"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ]
   }
 }

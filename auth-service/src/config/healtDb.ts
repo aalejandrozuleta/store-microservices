@@ -1,6 +1,6 @@
-import { mongoConnection } from "./mongoDb";
-import pool from "./mysqlDb";
-import { clientRedis } from "./redisDb";
+import { mongoConnection } from './mongoDb';
+import pool from './mysqlDb';
+import { clientRedis } from './redisDb';
 
 const checkDb = async () => {
   try {

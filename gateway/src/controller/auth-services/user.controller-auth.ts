@@ -17,9 +17,6 @@ import { Request, Response } from 'express';
  * Devuelve un error con un mensaje claro en la respuesta.
  */
 
-
-
-
 export const userController = async (req: Request, res: Response) => {
   const authServiceUrl = process.env.AUTH_SERVICE_URL || '';
   try {
@@ -29,26 +26,31 @@ export const userController = async (req: Request, res: Response) => {
     console.log(error);
 
     if (error instanceof Error) {
-        // Si es un error estándar de JavaScript
-        res.status(500).json({
-            status: 500,
-            message: error.message,
-        });
-    } else if (error && (error as CustomError).status && (error as CustomError).data) {
-        // Si el error tiene el tipo CustomError
-        const customError = error as CustomError;
-        res.status(customError.status).json({
-            status: customError.status,
-            message: typeof customError.data === 'string' ? customError.data : customError.data.error,
-        });
+      // Si es un error estándar de JavaScript
+      res.status(500).json({
+        status: 500,
+        message: error.message,
+      });
+    } else if (
+      error &&
+      (error as CustomError).status &&
+      (error as CustomError).data
+    ) {
+      // Si el error tiene el tipo CustomError
+      const customError = error as CustomError;
+      res.status(customError.status).json({
+        status: customError.status,
+        message:
+          typeof customError.data === 'string'
+            ? customError.data
+            : customError.data.error,
+      });
     } else {
-        // En caso de un error desconocido
-        res.status(500).json({
-            status: 500,
-            message: 'Internal Server Error',
-        });
+      // En caso de un error desconocido
+      res.status(500).json({
+        status: 500,
+        message: 'Internal Server Error',
+      });
     }
-}
-
+  }
 };
-

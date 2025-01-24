@@ -12,7 +12,8 @@ export const swaggerOptions: swaggerJsDoc.Options = {
     info: {
       title: 'API de Microservicio de Usuarios',
       version: '1.0.0',
-      description: 'Esta es la documentación de la API para gestionar usuarios.',
+      description:
+        'Esta es la documentación de la API para gestionar usuarios.',
     },
     servers: [
       {

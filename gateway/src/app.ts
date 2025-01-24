@@ -9,7 +9,7 @@ import { routerSharedService } from '@routes/shared-service.routes';
 
 // Middleware de rutas
 app.use('/api/auth', routerAuthService);
-app.use('/api/shared',routerSharedService);
+app.use('/api/shared', routerSharedService);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, res: Response) => {

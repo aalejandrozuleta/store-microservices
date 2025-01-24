@@ -46,10 +46,5 @@
     "@helpers": "dist/helpers",
     "@config": "dist/config",
     "@shared": "../shared/dist/"
-  },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ]
   }
 }

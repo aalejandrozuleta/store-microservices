@@ -12,18 +12,16 @@ export const app = express();
 dotenv.config(); // Cargar configuraciones de entorno (por ejemplo, variables de la base de datos, puertos, etc.)
 
 // Configuración de middleware CORS para permitir solicitudes desde orígenes específicos
-const allowedOrigins = [
-  process.env.CORS_BACKEND as string,
-];
+const allowedOrigins = [process.env.CORS_BACKEND as string];
 app.use(
   cors({
     origin: allowedOrigins.filter(
-      (origin): origin is string => typeof origin === 'string', // Asegura que las orígenes son cadenas de texto
+      (origin): origin is string => typeof origin === 'string' // Asegura que las orígenes son cadenas de texto
     ),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos para las solicitudes CORS
     credentials: true, // Permitir el envío de cookies con las solicitudes
     allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
-  }),
+  })
 );
 
 // Agrega morgan como middleware para logging de peticiones HTTP
@@ -45,17 +43,18 @@ app.disable('x-powered-by'); // Evita que el servidor revele información sobre 
 app.use(express.urlencoded({ extended: true })); // Permite que los formularios sean procesados correctamente
 
 // Verificación de la base de datos antes de iniciar el servidor
-checkDb().then(() => {
-  const PORT: string | number = process.env.PORT || ""; // Define el puerto del servidor (por defecto desde .env)
-  app.listen(PORT, () => {
-    console.info(
-      `Servidor shared corriendo en el puerto http://localhost:${PORT}`, // Muestra en consola que el servidor está corriendo
+checkDb()
+  .then(() => {
+    const PORT: string | number = process.env.PORT || ''; // Define el puerto del servidor (por defecto desde .env)
+    app.listen(PORT, () => {
+      console.info(
+        `Servidor shared corriendo en el puerto http://localhost:${PORT}` // Muestra en consola que el servidor está corriendo
+      );
+    });
+  })
+  .catch((error: string) => {
+    console.error(
+      'No se pudo iniciar el servidor debido a un error en la base de datos:', // Mensaje de error si no se puede conectar a la base de datos
+      error
     );
   });
-})
-.catch((error: string) => {
-  console.error(
-    'No se pudo iniciar el servidor debido a un error en la base de datos:', // Mensaje de error si no se puede conectar a la base de datos
-    error,
-  );
-});

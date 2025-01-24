@@ -3,20 +3,20 @@ import { Request } from 'express';
 
 /**
  * Realiza una solicitud HTTP a otro servicio (proxy) utilizando los mismos parámetros de la solicitud original.
- * 
+ *
  * Esta función toma la solicitud original, ajusta la URL para eliminar la parte del path `/api/shared`,
  * clona los encabezados y realiza la solicitud HTTP al servicio externo utilizando Axios. Si ocurre un error,
  * se maneja y se lanza con información detallada.
- * 
+ *
  * @async
  * @function proxyRequestShared
  * @param {Request} req - Objeto de solicitud de Express que contiene los detalles de la solicitud HTTP original.
  * @param {string} serviceUrl - URL base del servicio al que se va a realizar la solicitud.
  * @returns {Promise<Object>} Retorna la respuesta del servicio con el mismo formato que Axios.
- * 
+ *
  * @throws {Object} Si ocurre un error, se lanza un objeto con el código de estado y los datos del error.
  * El objeto tiene la forma `{ status: number, data: string }`.
- * 
+ *
  * @example
  * const response = await proxyRequest(req, 'http://shared');
  * res.status(response.status).json(response.data);

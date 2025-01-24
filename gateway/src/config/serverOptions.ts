@@ -18,12 +18,12 @@ const allowedOrigins = [
 app.use(
   cors({
     origin: allowedOrigins.filter(
-      (origin): origin is string => typeof origin === 'string', // Asegura que las orígenes son cadenas de texto
+      (origin): origin is string => typeof origin === 'string' // Asegura que las orígenes son cadenas de texto
     ),
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Métodos permitidos para las solicitudes CORS
     credentials: true, // Permitir el envío de cookies con las solicitudes
     allowedHeaders: ['Content-Type', 'Authorization'], // Headers permitidos
-  }),
+  })
 );
 
 // Agrega morgan como middleware para logging de peticiones HTTP
@@ -47,24 +47,23 @@ const limiter = rateLimit({
   max: 100, // Limitar a 100 solicitudes por IP
 });
 app.use(limiter);
-  
-const PORT: string | number = process.env.PORT || ""; // Define el puerto del servidor (por defecto desde .env)
+
+const PORT: string | number = process.env.PORT || ''; // Define el puerto del servidor (por defecto desde .env)
 
 if (isNaN(Number(PORT))) {
-  console.error("El valor de PORT no es un número válido.");
+  console.error('El valor de PORT no es un número válido.');
   process.exit(1);
 }
 
 try {
   app.listen(PORT, () => {
     console.info(
-      `Servidor gateway en el puerto http://localhost:${PORT}`, // Muestra en consola que el servidor está corriendo
+      `Servidor gateway en el puerto http://localhost:${PORT}` // Muestra en consola que el servidor está corriendo
     );
   });
 } catch (error) {
   console.error(
     'No se pudo iniciar el servidor debido a un error:', // Mensaje de error si no se puede iniciar el servidor
-    error,
+    error
   );
 }
-

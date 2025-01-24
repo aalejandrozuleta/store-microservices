@@ -20,7 +20,7 @@ import { emailController } from '@controller/emails/email.controller';
  *               data:
  *                 type: object
  *                 properties:
- *                  email: 
+ *                  email:
  *                    type: string
  *                    description: Dirección de correo electrónico del destinatario.
  *                    example: "destinatario@example.com"

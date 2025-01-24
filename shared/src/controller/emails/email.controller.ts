@@ -1,6 +1,6 @@
-import { EmailsInterface } from "@interfaces/emails.interface";
-import { emailService } from "@services/emails/email.service";
-import { Request, Response } from "express";
+import { EmailsInterface } from '@interfaces/emails.interface';
+import { emailService } from '@services/emails/email.service';
+import { Request, Response } from 'express';
 
 /**
  * Controlador para manejar el envío de correos electrónicos.
@@ -15,14 +15,17 @@ import { Request, Response } from "express";
  *
  * @returns Una respuesta HTTP con un estado `200` si el correo fue enviado correctamente, o un estado `500` en caso de error.
  */
-export const emailController = async (req: Request, res: Response): Promise<void> => {
+export const emailController = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   const data = req.body.data as EmailsInterface;
 
   try {
     await emailService(data);
-    res.status(200).send({ message: "Correo enviado correctamente" });
+    res.status(200).send({ message: 'Correo enviado correctamente' });
   } catch (error) {
-    console.error("Error al enviar correo:", error);
+    console.error('Error al enviar correo:', error);
     res.status(500).send({ message: error });
   }
 };

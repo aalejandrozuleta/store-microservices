@@ -10,8 +10,8 @@ import swaggerRouter from '@config/swagger';
 
 //  Usar rutas
 app.use('/shared', routerBcrypt);
-app.use("/shared", routerEmail);
-app.use(swaggerRouter); 
+app.use('/shared', routerEmail);
+app.use(swaggerRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 app.use((err: any, res: Response) => {

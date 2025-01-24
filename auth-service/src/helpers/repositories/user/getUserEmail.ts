@@ -19,15 +19,14 @@ export class GetUserEmail {
    * @throws {Error} Si ocurre un error durante la ejecución de la consulta SQL.
    */
   static async getUserEmail(email: string) {
-    const sql = `SELECT email FROM users WHERE email = ?`;
+    const sql = 'SELECT email FROM users WHERE email = ?';
     const values = [email];
     // Desestructuramos la respuesta para obtener solo las filas
     const [rows, fields]: [RowDataPacket[], FieldPacket[]] = await db.query(
       sql,
-      values,
+      values
     );
 
     return rows;
   }
 }
-

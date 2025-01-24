@@ -5,7 +5,7 @@ import { registerController } from '@controller/user/register.controller';
 import { registerValidator } from '@middleware/user/register.middleware';
 
 /**
- * 
+ *
  * @swagger
  * /user/register:
  *   post:
@@ -79,4 +79,4 @@ import { registerValidator } from '@middleware/user/register.middleware';
  *                   example: "Ocurrió un error desconocido"
  */
 
-routerUser.post('/register',registerValidator, registerController)
+routerUser.post('/register', registerValidator, registerController);
