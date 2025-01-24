@@ -1,5 +1,1 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-# Ejecuta eslint usando lint-staged, si hay errores o warnings, bloquea el commit
-npx lint-staged
+npm test
