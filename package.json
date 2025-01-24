@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "eslint": "eslint --fix"
+    "eslint": "eslint --fix",
+    "prepare": "husky || true",
+    "pre-commit": "lint-staged"
   },
   "lint-staged": {
     "*.ts": [
@@ -21,8 +23,10 @@
     "@typescript-eslint/parser": "^8.20.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
-    "eslint-plugin-prettier": "^5.2.3",
+    "eslint-plugin-prettier": "^5.2.3"
+  },
+  "devDependencies": {
     "husky": "^9.1.7",
-    "lint-staged": "^15.4.1"
+    "lint-staged": "^15.4.2"
   }
 }
