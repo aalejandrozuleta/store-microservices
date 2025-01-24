@@ -1,59 +1,43 @@
-import { body, validationResult, ValidationChain, ValidationError } from 'express-validator';
-import { Request } from 'express';
+import { Request, Response, NextFunction } from 'express';
+import { z } from 'zod';
+import { logger } from '@config/logger';
 
-/**
- * Valida los campos necesarios para el registro de un usuario.
- * Utiliza `express-validator` para asegurarse de que los datos proporcionados son válidos.
- * 
- * @constant registerValidator
- * @type {ValidationChain[]}
- */
-const registerValidator: ValidationChain[] = [
-  body('name')
-    .isString()
-    .withMessage('El nombre debe ser una cadena de caracteres')
-    .isLength({ min: 3 })
-    .withMessage('El nombre debe tener al menos 3 caracteres')
-    .matches(/^[A-Za-z\s]+$/)
-    .withMessage('El nombre solo debe contener letras y espacios'),
+// Esquema Zod para la validación de datos de registro
+const registerSchema = z.object({
+  name: z
+    .string()
+    .min(3, { message: 'El nombre debe tener al menos 3 caracteres' })
+    .regex(/^[A-Za-z\s]+$/, { message: 'El nombre solo debe contener letras y espacios' }),
 
-  body('email')
-    .isEmail()
-    .withMessage('El correo electrónico debe ser válido')
-    .normalizeEmail(),
+  email: z.string().email({ message: 'El correo electrónico debe ser válido' }),
 
-  body('birthdate')
-    .isDate()
-    .withMessage('La fecha de nacimiento debe ser una fecha válida'),
+  birthdate: z.string().refine((val) => !isNaN(Date.parse(val)), {
+    message: 'La fecha de nacimiento debe ser válida',
+  }),
 
-  body('password')
-    .isString()
-    .withMessage('La contraseña debe ser una cadena de caracteres')
-    .isLength({ min: 8, max: 20 })
-    .matches(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/)
-    .withMessage('La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial'),
+  password: z
+    .string()
+    .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
+    .max(20, { message: 'La contraseña no debe exceder los 20 caracteres' })
+    .regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/, {
+      message: 'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial',
+    }),
 
-  body('role')
-    .isInt({ min: 1, max: 4 })
-    .withMessage('El rol debe ser un número entre 1 y 4'),
-];
+  role: z
+    .number()
+    .min(1, { message: 'El rol debe ser un número entre 1 y 4' })
+    .max(4, { message: 'El rol debe ser un número entre 1 y 4' }),
+});
 
-/**
- * Función para validar los datos de la solicitud.
- * 
- * Este método se utiliza para revisar si existen errores de validación y devolverlos.
- * 
- * @param {Request} req - Objeto de solicitud HTTP.
- * @returns {ValidationError[]} - Devuelve un array con los errores de validación si existen, de lo contrario un array vacío.
- */
-const validateUser = (req: Request): ValidationError[] => {
-  const errors = validationResult(req);
+// Middleware de validación utilizando Zod
+export const registerValidator = (req: Request, res: Response, next: NextFunction) => {
+  const result = registerSchema.safeParse(req.body);
 
-  if (!errors.isEmpty()) {
-    return errors.array();
+  if (!result.success) {
+    logger.warn('Validación fallida', { errors: result.error.errors });
+    res.status(400).json({ errors: result.error.errors.map((err) => err.message) });
+  } else {
+    req.body = result.data; // Asignamos los datos validados al cuerpo de la solicitud
+    next(); // Si la validación es exitosa, pasamos al siguiente middleware
   }
-
-  return [];
 };
-
-export { registerValidator, validateUser };

@@ -6,24 +6,51 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "typeRoots": ["./node_modules/@types"],
+    "typeRoots": [
+      "./node_modules/@types"
+    ],
     "outDir": "./dist",
     "baseUrl": "./src/",
     "moduleResolution": "node",
     "paths": {
-      "@controller/*": ["controller/*"],
-      "@config/*": ["config/*"],
-      "@dto/*": ["dto/*"],
-      "@helpers/*": ["helpers/*"],
-      "@interfaces/*": ["interfaces/*"],
-      "@middleware/*": ["middleware/*"],
-      "@repositories/*": ["repositories/*"],
-      "@routes/*": ["routes/*"],
-      "@services/*": ["services/*"],
-      "@models/*": ["models/*"],
-      "@utils/*": ["utils/*"],
+      "@controller/*": [
+        "controller/*"
+      ],
+      "@config/*": [
+        "config/*"
+      ],
+      "@dto/*": [
+        "dto/*"
+      ],
+      "@helpers/*": [
+        "helpers/*"
+      ],
+      "@interfaces/*": [
+        "interfaces/*"
+      ],
+      "@middleware/*": [
+        "middleware/*"
+      ],
+      "@repositories/*": [
+        "repositories/*"
+      ],
+      "@routes/*": [
+        "routes/*"
+      ],
+      "@services/*": [
+        "services/*"
+      ],
+      "@models/*": [
+        "models/*"
+      ],
+      "@utils/*": [
+        "utils/*"
+      ],
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts"],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

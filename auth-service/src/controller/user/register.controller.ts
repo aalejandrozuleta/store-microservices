@@ -3,7 +3,7 @@ import { RegisterDto } from '@dto/user/register.dto';
 import { UserInterface } from '@interfaces/user.interface';
 import { registerService } from '@services/user/register.service';
 import { Request, Response } from 'express';
-import { validationResult } from 'express-validator';
+
 
 /**
  * Controlador para manejar el registro de nuevos usuarios.
@@ -26,17 +26,7 @@ import { validationResult } from 'express-validator';
 export const registerController = async (
   req: Request,
   res: Response,
-): Promise<void> => {
-  // Validar los datos de entrada utilizando express-validator
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    logger.warn('Validación fallida', { errors: errors.array() }); // Log de advertencia
-
-    res
-      .status(400)
-      .json({ errors: errors.array().map((err) => err.msg) });
-      return;
-  }
+) => {
 
   // Se obtiene el usuario del cuerpo de la solicitud, omitiendo las propiedades accountStatus y registeredAt
   const user = req.body as Omit<UserInterface, 'accountStatus' | 'registeredAt'>;
@@ -61,7 +51,7 @@ export const registerController = async (
     });
 
     // Se devuelve una respuesta de éxito con el código de estado 201
-     res.status(201).json({ message: 'User created successfully' });
+    res.status(201).json({ message: 'User created successfully' });
   } catch (error) {
     // Manejo de errores
     const errorMessage =
@@ -73,7 +63,7 @@ export const registerController = async (
       email: user?.email || 'Email no proporcionado',
       error: errorMessage,
     });
-    
+
 
     // Se devuelve una respuesta de error con el código de estado 500 y el mensaje de error
     res.status(500).json({ error: errorMessage });
