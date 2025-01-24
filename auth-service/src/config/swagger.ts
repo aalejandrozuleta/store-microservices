@@ -1,8 +1,12 @@
-import swaggerJsDoc from 'swagger-jsdoc';
 import swaggerUi from 'swagger-ui-express';
-import { Express } from 'express';
+import swaggerJsDoc from 'swagger-jsdoc';
+import dotenv from 'dotenv';
+import { Router } from 'express';
 
-const swaggerOptions: swaggerJsDoc.Options = {
+// Cargar las variables de entorno desde el archivo .env
+dotenv.config();
+
+export const swaggerOptions: swaggerJsDoc.Options = {
   swaggerDefinition: {
     openapi: '3.0.0',
     info: {
@@ -12,16 +16,21 @@ const swaggerOptions: swaggerJsDoc.Options = {
     },
     servers: [
       {
-        url: 'http://localhost:4001',
+        // Usar process.env para obtener la URL del servidor
+        url: process.env.API_URL || 'http://localhost:4002', // Valor predeterminado si no está definida
       },
     ],
   },
-  apis: ['./src/routes/*.ts'], // Ruta donde se encuentran los controladores o endpoints
+  apis: ['./src/routes/*/*.routes.ts'], // Ruta donde se encuentran los controladores o endpoints
 };
 
+// Generar la documentación Swagger
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
-export default (app: Express) => {
-  // Ruta para servir la documentación de Swagger
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
-};
+// Crear el router para Swagger
+const swaggerRouter = Router();
+
+// Configurar Swagger en la ruta /api-docs
+swaggerRouter.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+export default swaggerRouter;

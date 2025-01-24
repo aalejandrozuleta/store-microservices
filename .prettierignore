@@ -1,9 +1,0 @@
-# .prettierignore
-node_modules
-dist
-*.md
-.vscode
-.git
-*.log
-*.json
-.env

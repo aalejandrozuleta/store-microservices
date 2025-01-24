@@ -1,11 +1,11 @@
 module.exports = {
   parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
+  plugins: ['@typescript-eslint', 'prettier'],
   extends: [
     'eslint:recommended',
     'plugin:@typescript-eslint/recommended',
-    'prettier',
-    'plugin:prettier/recommended',
+    'prettier', // Para desactivar reglas que podrían entrar en conflicto con Prettier
+    'plugin:prettier/recommended', // Activa Prettier como regla de ESLint
   ],
   rules: {
     'semi': 'error',
@@ -15,6 +15,7 @@ module.exports = {
     'no-console': ['warn', { allow: ['error', 'info'] }],
     'no-var': 'error',
     'prefer-const': 'error',
+    'prettier/prettier': ['error', { singleQuote: true, semi: true, trailingComma: 'es5' }], // Configuración personalizada de Prettier
   },
   ignorePatterns: ['node_modules/'],
   env: {
