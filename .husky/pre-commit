@@ -1,4 +1,33 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+# Obtiene una lista de carpetas modificadas
+modified_dirs=$(git diff --name-only --cached | grep '/')
+
+# Si no hay carpetas modificadas, salimos
+if [ -z "$modified_dirs" ]; then
+  echo "No hay carpetas modificadas, omitiendo ejecución de npm run docs"
+  exit 0
+fi
+
+# Recorre las carpetas modificadas y ejecuta npm run docs
+for dir in $modified_dirs; do
+  # Extrae la carpeta del path (por ejemplo, 'src/' de 'src/file.ts')
+  folder=$(dirname "$dir")
+  
+  # Verifica si la carpeta existe y es un directorio
+  if [ -d "$folder" ]; then
+    echo "Ejecutando npm run docs en la carpeta $folder"
+    
+    # Ejecuta npm run docs y maneja errores
+    (cd "$folder" && npm run docs)
+    
+    # Verifica si ocurrió un error al ejecutar el comando
+    if [ $? -ne 0 ]; then
+      echo "Error al ejecutar npm run docs en $folder. Continuando con el siguiente directorio..."
+    fi
+  fi
+done
+
+# Ejecuta lint-staged
 npx lint-staged
