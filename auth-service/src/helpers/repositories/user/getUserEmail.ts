@@ -1,5 +1,5 @@
 import db from '@config/mysqlDb';
-import { FieldPacket, QueryResult, RowDataPacket } from 'mysql2';
+import { FieldPacket, RowDataPacket } from 'mysql2';
 
 /**
  * Clase que proporciona métodos para interactuar con la base de datos de usuarios.
@@ -22,7 +22,7 @@ export class GetUserEmail {
     const sql = 'SELECT email FROM users WHERE email = ?';
     const values = [email];
     // Desestructuramos la respuesta para obtener solo las filas
-    const [rows, fields]: [RowDataPacket[], FieldPacket[]] = await db.query(
+    const [rows]: [RowDataPacket[], FieldPacket[]] = await db.query(
       sql,
       values
     );

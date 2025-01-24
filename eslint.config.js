@@ -18,7 +18,12 @@ export default [
     },
     rules: {
       // Reglas de ESLint recomendadas (manual)
-      'no-console': 'warn', // Ejemplo de regla de ESLint recomendada
+      'no-console': [
+        'warn',
+        {
+          allow: ['info', 'error'], // Permite console.info y console.error
+        },
+      ],
       eqeqeq: 'error', // Ejemplo de regla adicional de ESLint
 
       // Reglas de TypeScript recomendadas

@@ -14,6 +14,6 @@ app.use('/auth/user', routerUser);
 app.use(swaggerRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use((err: any, req: any, res: Response, next: any) => {
+app.use((err: any, req: any, res: Response) => {
   res.status(500).send({ message: err.message });
 });

@@ -1,3 +1,4 @@
+import { CustomError } from '@helpers/customError';
 import { proxyRequestUser } from '@services/proxy-auth-service';
 import { Request, Response } from 'express';
 
@@ -23,7 +24,7 @@ export const userController = async (req: Request, res: Response) => {
     const response = await proxyRequestUser(req, authServiceUrl);
     res.status(response.status).json(response.data);
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     if (error instanceof Error) {
       // Si es un error estándar de JavaScript

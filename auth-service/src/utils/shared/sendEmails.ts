@@ -1,3 +1,4 @@
+import { EmailsInterface } from '@interfaces/emails.interface';
 import axios from 'axios';
 
 export const sendEmails = async (data: EmailsInterface) => {

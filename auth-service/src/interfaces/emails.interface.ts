@@ -1,4 +1,4 @@
-interface EmailsInterface {
+export interface EmailsInterface {
   email: string;
   template: string;
   subject: string;
