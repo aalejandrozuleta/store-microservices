@@ -29,6 +29,9 @@ export const registerController = async (req: Request, res: Response) => {
     'accountStatus' | 'registeredAt'
   >;
 
+  const hola:any = "ss";
+  console.log(hola);
+  
   // Se crea un objeto RegisterDto con los datos del usuario para pasarlo al servicio de registro
   const newUser = new RegisterDto(
     user.name,
