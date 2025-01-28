@@ -1,5 +1,6 @@
 import { RegisterDto } from '@dto/user/register.dto';
 import { GetUserEmail } from '@helpers/repositories/user/getUserEmail';
+import { EmailsInterface } from '@interfaces/emails.interface';
 import { RegisterRepository } from '@repositories/user/register.repository';
 import { hashPassword } from '@utils/shared/hashPassword';
 import { sendEmails } from '@utils/shared/sendEmails';

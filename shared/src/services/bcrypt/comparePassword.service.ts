@@ -13,12 +13,14 @@ import { comparePassword } from '@helpers/bcrypt/password/comparePassword';
  * @returns Una promesa que resuelve en un valor booleano, que indica si la contraseña coincide con el hash.
  * @throws Error - Si ocurre un error al comparar la contraseña y el hash.
  */
-export const comparePasswordService = (
+export const comparePasswordService = async (
   password: string,
   hash: string
 ): Promise<boolean> => {
-  return comparePassword(password, hash).catch((error) => {
+  try {
+    return await comparePassword(password, hash);
+  } catch (error) {
     console.error('Error al comparar la contraseña:', error);
     throw error;
-  });
+  }
 };
