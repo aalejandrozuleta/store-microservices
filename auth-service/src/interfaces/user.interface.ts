@@ -137,4 +137,14 @@ export interface UserDevicesInterface {
    * @type {string}
    */
   location: string;
+
+  /**
+   * Estado del dispositivo.
+   *
+   * Este campo indica si el dispositivo ha sido autorizado o no.
+   *
+   * @type {string}
+   */
+
+  autorizad?: string;
 }

@@ -36,13 +36,14 @@ export class RegisterRepository {
 
   static async registerDevices(devices: UserDevicesInterface) {
     const sql =
-      'INSERT INTO user_devices (user_id, device_name, ip_address, user_agent, location) VALUES (?, ?, ?, ?, ?)';
+      'INSERT INTO user_devices (user_id, device_name, ip_address, user_agent, location, autorizad) VALUES (?, ?, ?, ?, ?, ?)';
     const values = [
       devices.user_id,
       devices.device_name,
       devices.ip_address,
       devices.user_agent,
       devices.location,
+      devices.autorizad,
     ];
     await db.query(sql, values);
   }

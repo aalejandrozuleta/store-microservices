@@ -1,5 +1,5 @@
 import { RegisterDto } from '@dto/user/register.dto';
-import { GetUserEmail } from '@helpers/repositories/user/getUserEmail';
+import { GetUserEmail } from '@repositories/user/getUserEmail';
 import { EmailsInterface } from '@interfaces/emails.interface';
 import { UserDevicesInterface } from '@interfaces/user.interface';
 import { RegisterRepository } from '@repositories/user/register.repository';
@@ -45,6 +45,7 @@ export const registerService = async (
     // Registramos al usuario en la base de datos con el objeto completo
     const idRegisterUser: number = await RegisterRepository.register(user);
     devices.user_id = idRegisterUser;
+    devices.autorizad = 'AUTORICE';
     RegisterRepository.registerDevices(devices);
 
     // Enviamos un correo electrónico con el enlace de activación

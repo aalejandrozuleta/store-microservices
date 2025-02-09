@@ -80,3 +80,9 @@ import { registerValidator } from '@middleware/user/register.middleware';
  */
 
 routerUser.post('/register', registerValidator, registerController);
+
+import { authController } from '@controller/user/auth.controller';
+routerUser.post('/auth', authController);
+
+import { refreshAccessToken } from '@controller/user/refreshAccessToken';
+routerUser.post('/refresh', refreshAccessToken);

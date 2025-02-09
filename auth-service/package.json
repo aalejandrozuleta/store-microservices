@@ -66,6 +66,7 @@
     "@routes": "dist/routes",
     "@services": "dist/services",
     "@models": "dist/models",
-    "@utils": "dist/utils"
+    "@utils": "dist/utils",
+    "@security": "dist/security"
   }
 }

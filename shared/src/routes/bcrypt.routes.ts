@@ -1,6 +1,7 @@
 import express, { Router } from 'express';
 export const routerBcrypt: Router = express.Router();
 import { hashPasswordController } from '@controller/bcrypt/hashPasswordController';
+import { comparePasswordController } from '@controller/bcrypt/comparePassword.controller';
 
 /**
  * @swagger
@@ -47,3 +48,4 @@ import { hashPasswordController } from '@controller/bcrypt/hashPasswordControlle
  */
 
 routerBcrypt.use('/hashPassword', hashPasswordController);
+routerBcrypt.use('/comparePassword', comparePasswordController);

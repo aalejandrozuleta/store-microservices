@@ -24,15 +24,15 @@ CREATE TABLE user_devices (
     user_agent TEXT NOT NULL, -- Información del navegador y sistema operativo
     location VARCHAR(255), -- Ubicación aproximada del inicio de sesión
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora del inicio de sesión
+    autorizad ENUM('AUTORICE', 'INHAUTORICE') DEFAULT 'INHAUTORICE', -- Indica si el dispositivo ha sido autorizado o no
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- FK al usuario
 );
-
 
 -- Tabla de Categorías
 CREATE TABLE categories (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID único de la categoría
     name VARCHAR(255) NOT NULL UNIQUE, -- Nombre de la categoría
-    gender ENUM('male', 'female', 'unisex') NOT NULL -- Género aplicable (masculino, femenino, unisex)
+    gender ENUM('MALE', 'FEMALE', 'UNISEX') NOT NULL -- Género aplicable (masculino, femenino, unisex)
 );
 
 -- Tabla de Productos
@@ -51,7 +51,7 @@ CREATE TABLE products (
 CREATE TABLE orders (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID único del pedido
     user_id INT NOT NULL, -- Usuario que realizó el pedido
-    order_status ENUM('pending', 'shipped', 'delivered', 'cancelled') DEFAULT 'pending', -- Estado del pedido
+    order_status ENUM('PENDING', 'SHIPPED', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING', -- Estado del pedido
     order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha del pedido
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE -- FK al usuario
 );
@@ -71,8 +71,8 @@ CREATE TABLE order_items (
 CREATE TABLE payments (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID único del pago
     order_id INT NOT NULL, -- Pedido asociado al pago
-    payment_method ENUM('credit_card', 'paypal', 'bank_transfer') NOT NULL, -- Método de pago
-    payment_status ENUM('completed', 'pending', 'failed') DEFAULT 'pending', -- Estado del pago
+    payment_method ENUM('CREDIT_CARD', 'PAYPAL', 'BANK_TRANSFER') NOT NULL, -- Método de pago
+    payment_status ENUM('COMPLETED', 'PENDING', 'FAILED') DEFAULT 'PENDING', -- Estado del pago
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE ON UPDATE CASCADE -- FK al pedido
 );
 
@@ -120,11 +120,3 @@ CREATE TABLE discounts (
     discount_percentage DECIMAL(5, 2) NOT NULL, -- Porcentaje de descuento
     valid_until DATE -- Fecha límite de validez
 );
-
-
--- Insertar roles
-INSERT INTO roles (name) VALUES
-('admin'),
-('customer'),
-('moderator'),
-('seller');
