@@ -31,6 +31,7 @@
     "typedoc": "^0.27.6"
   },
   "dependencies": {
+    "@types/ua-parser-js": "^0.7.39",
     "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "compression": "^1.7.5",
@@ -50,6 +51,7 @@
     "swagger-jsdoc": "^6.2.8",
     "ts-node": "^10.9.2",
     "typescript": "^5.7.3",
+    "ua-parser-js": "^2.0.1",
     "winston": "^3.17.0",
     "zod": "^3.24.1"
   },

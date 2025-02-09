@@ -27,6 +27,15 @@ export interface UserInterface {
   email: string;
 
   /**
+   * Dirección de correo electrónico de recuperación del usuario.
+   *
+   * Este campo contiene el correo electrónico de recuperación y debe ser una cadena de texto válida.
+   *
+   * @type {string}
+   */
+  recovery_email: string;
+
+  /**
    * Fecha de nacimiento del usuario.
    *
    * Este campo contiene la fecha de nacimiento del usuario. El tipo de dato es `Date`.
@@ -43,33 +52,89 @@ export interface UserInterface {
    *
    * @type {string}
    */
+
   password: string;
 
   /**
    * Rol del usuario en el sistema.
    *
-   * Este campo representa el rol del usuario, que puede ser un número o el valor 2.
+   * Este campo representa el rol del usuario, que puede ser 'ADMIN', 'MODERATOR', 'STORE_OWNER', 'DELIVERY_OWNER', 'USER'.
    * El valor del rol determina los permisos y la funcionalidad disponible para el usuario.
    *
-   * @type {number | 2}
+   * @type {'ADMIN' | 'MODERATOR' | 'STORE_OWNER' | 'DELIVERY_OWNER' | 'USER'}
    */
-  role: number | 2;
+  role: 'ADMIN' | 'MODERATOR' | 'STORE_OWNER' | 'DELIVERY_OWNER' | 'USER';
+
+  /**
+   * Ubicación del usuario.
+   *
+   * Este campo representa la ubicación del usuario y debe ser una cadena de texto.
+   *
+   * @type {string}
+   */
+  location: string;
 
   /**
    * Estado de la cuenta del usuario.
    *
-   * Este campo indica el estado actual de la cuenta del usuario, por ejemplo, "activo", "suspendido", etc.
+   * Este campo indica el estado actual de la cuenta del usuario, por ejemplo, "ACTIVO", "INACTIVO", "SUSPENDIDO".
+   *
+   * @type {'ACTIVE' | 'INACTIVE' | 'SUSPENDED'}
+   */
+  accountStatus: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+}
+
+/**
+ * Interfaz que define la estructura de los dispositivos de usuario.
+ *
+ * Esta interfaz especifica los campos necesarios para almacenar información sobre los dispositivos
+ * que utiliza un usuario para acceder al sistema.
+ *
+ * @interface UserDevicesInterface
+ */
+export interface UserDevicesInterface {
+  /**
+   * Identificador del usuario al que pertenece el dispositivo.
+   *
+   * Este campo es un número que referencia al usuario asociado al dispositivo.
+   *
+   * @type {number}
+   */
+  user_id?: number;
+
+  /**
+   * Nombre del dispositivo.
+   *
+   * Este campo es una cadena de texto que indica el nombre del dispositivo.
    *
    * @type {string}
    */
-  accountStatus: string;
+  device_name: string;
 
   /**
-   * Fecha en que el usuario fue registrado en el sistema.
+   * Dirección IP del dispositivo.
    *
-   * Este campo contiene la fecha de registro del usuario y debe ser de tipo `Date`.
+   * Este campo es una cadena de texto que contiene la dirección IP desde donde el usuario accedió.
    *
-   * @type {Date}
+   * @type {string}
    */
-  registeredAt: Date;
+  ip_address: string;
+
+  /**
+   * Agente de usuario del dispositivo.
+   *
+   * Este campo es una cadena de texto que indica el agente de usuario del navegador o dispositivo.
+   *
+   * @type {string}
+   */
+  user_agent: string;
+
+  /**
+   * Ubicación del dispositivo.
+   *
+   * Este campo es una cadena de texto que indica la ubicación del dispositivo.
+   *
+   * @type {string}
+   */
+  location: string;
 }

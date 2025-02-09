@@ -1,8 +1,12 @@
 import { logger } from '@config/logger';
 import { RegisterDto } from '@dto/user/register.dto';
-import { UserInterface } from '@interfaces/user.interface';
+import {
+  UserDevicesInterface,
+  UserInterface,
+} from '@interfaces/user.interface';
 import { registerService } from '@services/user/register.service';
 import { Request, Response } from 'express';
+import { UAParser } from 'ua-parser-js';
 
 /**
  * Controlador para manejar el registro de nuevos usuarios.
@@ -23,10 +27,11 @@ import { Request, Response } from 'express';
  */
 
 export const registerController = async (req: Request, res: Response) => {
+  console.log('entre aqui');
   // Se obtiene el usuario del cuerpo de la solicitud, omitiendo las propiedades accountStatus y registeredAt
   const user = req.body as Omit<
     UserInterface,
-    'accountStatus' | 'registeredAt'
+    'accountStatus' | 'registeredAt' | 'recovery_email' | 'role'
   >;
 
   // Se crea un objeto RegisterDto con los datos del usuario para pasarlo al servicio de registro
@@ -35,12 +40,29 @@ export const registerController = async (req: Request, res: Response) => {
     user.email,
     user.birthdate,
     user.password,
-    user.role
+    user.location
   );
+
+  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+  // Obtener User-Agent
+  const userAgent = req.headers['user-agent'] || 'Desconocido';
+
+  // Analizar User-Agent para detectar el dispositivo
+  const parser = new UAParser();
+  const deviceInfo = parser.getResult();
+
+  const devices: UserDevicesInterface = {
+    device_name: deviceInfo.device.model
+      ? `${deviceInfo.device.vendor || ''} ${deviceInfo.device.model}`
+      : `${deviceInfo.os.name || 'OS desconocido'} ${deviceInfo.os.version || ''}`.trim(),
+    ip_address: Array.isArray(ip) ? ip[0] : ip || 'Desconocido',
+    user_agent: userAgent,
+    location: '',
+  };
 
   try {
     // Se llama al servicio de registro para guardar al nuevo usuario en la base de datos
-    await registerService(newUser);
+    await registerService(newUser, devices);
 
     // Registro exitoso, se loggea el evento con los detalles del nuevo usuario
     logger.info('User created successfully', {

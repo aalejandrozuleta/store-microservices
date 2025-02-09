@@ -1,9 +1,11 @@
 import { RegisterDto } from '@dto/user/register.dto';
 import { GetUserEmail } from '@helpers/repositories/user/getUserEmail';
 import { EmailsInterface } from '@interfaces/emails.interface';
+import { UserDevicesInterface } from '@interfaces/user.interface';
 import { RegisterRepository } from '@repositories/user/register.repository';
 import { hashPassword } from '@utils/shared/hashPassword';
 import { sendEmails } from '@utils/shared/sendEmails';
+import axios from 'axios';
 
 /**
  * Servicio para registrar un nuevo usuario.
@@ -18,13 +20,27 @@ import { sendEmails } from '@utils/shared/sendEmails';
  * @param user - El objeto de datos del usuario que contiene la información para el registro.
  * @throws Error - Si el correo electrónico ya existe o si ocurre algún error en el proceso.
  */
-export const registerService = async (user: RegisterDto) => {
+export const registerService = async (
+  user: RegisterDto,
+  devices: UserDevicesInterface
+) => {
   try {
     // Comprobamos si el correo electrónico ya está registrado
     const isEmailRegistered = await GetUserEmail.getUserEmail(user.email);
 
     if (isEmailRegistered.length > 0) {
       throw new Error(`Email ${user.email} ya está registrado`);
+    }
+
+    if (typeof devices.ip_address === 'string') {
+      try {
+        const geoData = await axios.get(`http://ip-api.com/json/${ip}`);
+        if (geoData.data && geoData.data.status === 'success') {
+          devices.location = `${geoData.data.city}, ${geoData.data.country}`;
+        }
+      } catch (geoError) {
+        console.error('Error obteniendo la ubicación:', geoError);
+      }
     }
 
     // Hasheamos la contraseña llamando al microservicio shared
@@ -34,7 +50,9 @@ export const registerService = async (user: RegisterDto) => {
     user.password = passwordHash;
 
     // Registramos al usuario en la base de datos con el objeto completo
-    await RegisterRepository.register(user);
+    const idRegisterUser: number = await RegisterRepository.register(user);
+    devices.user_id = idRegisterUser;
+    RegisterRepository.registerDevices(devices);
 
     // Enviamos un correo electrónico con el enlace de activación
     const data: EmailsInterface = {

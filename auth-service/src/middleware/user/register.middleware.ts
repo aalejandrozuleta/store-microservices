@@ -25,11 +25,6 @@ const registerSchema = z.object({
       message:
         'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial',
     }),
-
-  role: z
-    .number()
-    .min(1, { message: 'El rol debe ser un número entre 1 y 4' })
-    .max(4, { message: 'El rol debe ser un número entre 1 y 4' }),
 });
 
 // Middleware de validación utilizando Zod

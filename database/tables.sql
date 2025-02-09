@@ -1,24 +1,32 @@
 CREATE DATABASE IF NOT EXISTS clothing_store;
 USE clothing_store;
 
--- Tabla de Roles de Usuarios
-CREATE TABLE roles (
-    id INT PRIMARY KEY AUTO_INCREMENT, -- ID único para el rol
-    name VARCHAR(50) NOT NULL UNIQUE -- Nombre del rol (admin, cliente, etc.)
-);
-
--- Tabla de Usuarios
+-- Tabla de Usuarios con ENUM para roles
 CREATE TABLE users (
     id INT PRIMARY KEY AUTO_INCREMENT, -- ID único del usuario
     name VARCHAR(255) NOT NULL, -- Nombre del usuario
     email VARCHAR(255) NOT NULL UNIQUE, -- Correo electrónico del usuario
+    recovery_email VARCHAR(255), -- Correo electrónico de recuperación
     birthdate DATE, -- Fecha de nacimiento
-    password VARCHAR(255) NOT NULL, -- Contraseña encriptada
-    role_id INT NOT NULL, -- Rol asignado al usuario
-    account_status ENUM('active', 'inactive', 'suspended') DEFAULT 'active', -- Estado de la cuenta
-    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha de registro
-    FOREIGN KEY (role_id) REFERENCES roles(id) ON DELETE RESTRICT ON UPDATE CASCADE -- FK al rol
+    password VARCHAR(255) NOT NULL, -- Contraseña encriptada (usar bcrypt)
+    role ENUM('ADMIN', 'MODERATOR', 'STORE_OWNER', 'DELIVERY_OWNER', 'USER') NOT NULL DEFAULT 'USER', -- Rol del usuario
+    location VARCHAR(255), -- Ubicación del usuario (ciudad/país o coordenadas)
+    account_status ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED') DEFAULT 'ACTIVE', -- Estado de la cuenta
+    registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Fecha de registro
 );
+
+-- Tabla para registrar los dispositivos en los que se inicia sesión
+CREATE TABLE user_devices (
+    id INT PRIMARY KEY AUTO_INCREMENT, -- ID único del registro
+    user_id INT NOT NULL, -- ID del usuario que inició sesión
+    device_name VARCHAR(255) NOT NULL, -- Nombre del dispositivo (Ej: "iPhone 13", "MacBook Pro M1")
+    ip_address VARCHAR(45) NOT NULL, -- Dirección IP de inicio de sesión
+    user_agent TEXT NOT NULL, -- Información del navegador y sistema operativo
+    location VARCHAR(255), -- Ubicación aproximada del inicio de sesión
+    login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora del inicio de sesión
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- FK al usuario
+);
+
 
 -- Tabla de Categorías
 CREATE TABLE categories (
