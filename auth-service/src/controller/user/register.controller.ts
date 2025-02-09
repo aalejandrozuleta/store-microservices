@@ -1,38 +1,37 @@
 import { logger } from '@config/logger';
 import { RegisterDto } from '@dto/user/register.dto';
-import {
-  UserDevicesInterface,
-  UserInterface,
-} from '@interfaces/user.interface';
+import { UserInterface } from '@interfaces/user.interface';
 import { registerService } from '@services/user/register.service';
+import { getDeviceInfo } from '@utils/UAparse/getDeviceInfo';
 import { Request, Response } from 'express';
-import { UAParser } from 'ua-parser-js';
 
 /**
- * Controlador para manejar el registro de nuevos usuarios.
+ * Controlador para gestionar el registro de nuevos usuarios.
  *
- * Este controlador recibe los datos del usuario desde la solicitud HTTP (body) y utiliza
- * Miramos que no haya errores en el middleware
- * el servicio de registro para guardar la nueva información del usuario en la base de datos.
- * Si el registro es exitoso, se responde con un mensaje de éxito y un código de estado 201.
- * En caso de error, maneja la excepción y responde con un mensaje de error y un código de estado 500.
+ * Este controlador recibe los datos del usuario desde una solicitud HTTP (body) y
+ * utiliza un servicio de registro para almacenar la nueva información del usuario
+ * en la base de datos. Si el registro es exitoso, responde con un mensaje de éxito
+ * y un código de estado 201. En caso de error, maneja la excepción y responde con
+ * un mensaje de error y código de estado 500.
  *
- * @param req - Objeto de solicitud HTTP que contiene los datos del nuevo usuario en el cuerpo.
- * Se omiten las propiedades `accountStatus` y `registeredAt` al recibir el usuario.
- * @param res - Objeto de respuesta HTTP utilizado para devolver una respuesta al cliente.
- *
- * @returns Una respuesta JSON con el estado del registro:
- *          - Si el registro es exitoso, se devuelve un código 201 y un mensaje de éxito.
- *          - Si ocurre un error, se devuelve un código 500 y un mensaje de error.
+ * @async
+ * @function registerController
+ * @param {Request} req - Objeto de solicitud HTTP que contiene los datos del nuevo usuario en el cuerpo.
+ *    Las propiedades `accountStatus` y `registeredAt` se omiten al recibir los datos del usuario.
+ * @param {Response} res - Objeto de respuesta HTTP utilizado para devolver una respuesta al cliente.
+ * @returns {Promise<void>} Una respuesta JSON con el estado del registro:
+ *    - Si el registro es exitoso, se devuelve un código 201 y un mensaje de éxito.
+ *    - Si ocurre un error, se devuelve un código 500 y un mensaje de error.
  */
 
 export const registerController = async (req: Request, res: Response) => {
-  console.log('entre aqui');
   // Se obtiene el usuario del cuerpo de la solicitud, omitiendo las propiedades accountStatus y registeredAt
   const user = req.body as Omit<
     UserInterface,
     'accountStatus' | 'registeredAt' | 'recovery_email' | 'role'
   >;
+
+  const devices = await getDeviceInfo(req);
 
   // Se crea un objeto RegisterDto con los datos del usuario para pasarlo al servicio de registro
   const newUser = new RegisterDto(
@@ -40,25 +39,8 @@ export const registerController = async (req: Request, res: Response) => {
     user.email,
     user.birthdate,
     user.password,
-    user.location
+    devices.location
   );
-
-  const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
-  // Obtener User-Agent
-  const userAgent = req.headers['user-agent'] || 'Desconocido';
-
-  // Analizar User-Agent para detectar el dispositivo
-  const parser = new UAParser();
-  const deviceInfo = parser.getResult();
-
-  const devices: UserDevicesInterface = {
-    device_name: deviceInfo.device.model
-      ? `${deviceInfo.device.vendor || ''} ${deviceInfo.device.model}`
-      : `${deviceInfo.os.name || 'OS desconocido'} ${deviceInfo.os.version || ''}`.trim(),
-    ip_address: Array.isArray(ip) ? ip[0] : ip || 'Desconocido',
-    user_agent: userAgent,
-    location: '',
-  };
 
   try {
     // Se llama al servicio de registro para guardar al nuevo usuario en la base de datos

@@ -22,8 +22,14 @@ export class RegisterRepository {
    */
   static async register(user: RegisterDto) {
     const sql =
-      'INSERT INTO users (name, email, birthdate, password) VALUES (?, ?, ?, ?)';
-    const values = [user.name, user.email, user.birthdate, user.password];
+      'INSERT INTO users (name, email, birthdate, password, location) VALUES (?, ?, ?, ?, ?)';
+    const values = [
+      user.name,
+      user.email,
+      user.birthdate,
+      user.password,
+      user.location,
+    ];
     const [result] = await db.query<ResultSetHeader>(sql, values);
     return result.insertId;
   }

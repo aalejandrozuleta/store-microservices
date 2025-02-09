@@ -5,7 +5,6 @@ import { UserDevicesInterface } from '@interfaces/user.interface';
 import { RegisterRepository } from '@repositories/user/register.repository';
 import { hashPassword } from '@utils/shared/hashPassword';
 import { sendEmails } from '@utils/shared/sendEmails';
-import axios from 'axios';
 
 /**
  * Servicio para registrar un nuevo usuario.
@@ -13,12 +12,17 @@ import axios from 'axios';
  * Este servicio realiza las siguientes acciones:
  * 1. Verifica si el correo electrónico del usuario ya está registrado en la base de datos.
  * 2. Si el correo electrónico existe, lanza un error.
- * 3. Hashea la contraseña antes de almacenarlo.
+ * 3. Hashea la contraseña antes de almacenarla.
  * 4. Registra al usuario en la base de datos.
- * 5. Envía un correo electrónico de confirmación al usuario.
+ * 5. Registrar los dispositivos del usuario en la base de datos.
+ * 6. Envía un correo electrónico de confirmación al usuario.
  *
- * @param user - El objeto de datos del usuario que contiene la información para el registro.
- * @throws Error - Si el correo electrónico ya existe o si ocurre algún error en el proceso.
+ * @async
+ * @function registerService
+ * @param {RegisterDto} user - Objeto de datos del usuario que contiene la información para el registro.
+ * @param {UserDevicesInterface} devices - Información del dispositivo del usuario.
+ * @throws {Error} Si el correo electrónico ya existe o si ocurre algún error en el proceso.
+ * @returns {Promise<void>}
  */
 export const registerService = async (
   user: RegisterDto,
@@ -30,17 +34,6 @@ export const registerService = async (
 
     if (isEmailRegistered.length > 0) {
       throw new Error(`Email ${user.email} ya está registrado`);
-    }
-
-    if (typeof devices.ip_address === 'string') {
-      try {
-        const geoData = await axios.get(`http://ip-api.com/json/${ip}`);
-        if (geoData.data && geoData.data.status === 'success') {
-          devices.location = `${geoData.data.city}, ${geoData.data.country}`;
-        }
-      } catch (geoError) {
-        console.error('Error obteniendo la ubicación:', geoError);
-      }
     }
 
     // Hasheamos la contraseña llamando al microservicio shared
