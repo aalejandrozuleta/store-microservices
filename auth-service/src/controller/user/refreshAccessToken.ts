@@ -29,7 +29,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     );
 
     // Guardar el nuevo Refresh Token en Redis
-    await saveTokenToRedis(decoded.email, newRefreshToken);
+    await saveTokenToRedis(decoded.id, decoded.email, newRefreshToken);
 
     res.json({ accessToken, refreshToken: newRefreshToken });
   } catch (error) {

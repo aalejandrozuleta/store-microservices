@@ -7,6 +7,9 @@ WORKDIR /app
 # Copiar el archivo package.json y package-lock.json (o yarn.lock) para instalar dependencias
 COPY package*.json ./
 
+# Instalar bcrypt de forma específica antes de instalar todas las dependencias
+RUN npm install bcrypt --build-from-source
+
 # Instalar todas las dependencias, incluyendo las de desarrollo
 RUN npm install
 

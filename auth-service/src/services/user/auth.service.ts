@@ -8,133 +8,134 @@ import { UserDevicesInterface } from '@interfaces/user.interface';
 import { AuthRepository } from '@repositories/user/auth.repository';
 import { comparePassword } from '@utils/shared/comparePassword';
 import { generateTokens } from '@security/jwt/generateToken';
-import { EmailsInterface } from '@interfaces/emails.interface';
 import { generateCode } from '@helpers/genereteCode';
 import { sendEmails } from '@utils/shared/sendEmails';
+import { revokeAllTokens } from '@services/redis/revokeTokens';
+import { verify2FACode } from '@security/2FA/verify2FACode';
 
 /**
- * Servicio de autenticación para validar las credenciales del usuario y generar un token JWT.
+ * Servicio de autenticación para validar credenciales y generar un token JWT.
  *
- * Este servicio verifica si el usuario está bloqueado por intentos fallidos, valida las credenciales, maneja los dispositivos registrados
- * y la ubicación geográfica, y genera un token de acceso válido. Además, realiza acciones para evitar accesos no autorizados desde
- * dispositivos o ubicaciones no reconocidas.
- *
- * @param user - Objeto de datos del usuario que incluye el correo electrónico y la contraseña.
- * @param device - Objeto con los detalles del dispositivo desde el que el usuario está intentando iniciar sesión, como el nombre del dispositivo y la dirección IP.
- * @returns Un objeto con el token de acceso y el token de actualización generado.
- * @throws Error si el usuario está bloqueado por intentos fallidos, si el usuario no existe, si la contraseña es incorrecta,
- * o si el intento de acceso proviene de una ubicación no reconocida.
+ * @param {AuthDto} user - Objeto con las credenciales del usuario (correo y contraseña).
+ * @param {UserDevicesInterface} device - Información del dispositivo desde donde se inicia sesión.
+ * @param {string} [twoFactorCode] - Código opcional de 2FA si el usuario tiene autenticación en dos pasos activada.
+ * @returns {Promise<{ accessToken: string, refreshToken: string }>} Token de acceso y actualización si la autenticación es exitosa.
+ * @throws Error si el usuario está bloqueado, las credenciales son incorrectas o el intento de acceso es sospechoso.
  */
+
 export const authService = async (
   user: AuthDto,
   device: UserDevicesInterface
 ) => {
   try {
-    // Verificar si el usuario está bloqueado debido a intentos fallidos
+    console.log('user', user);
+
+    // Verificar si el usuario está bloqueado por intentos fallidos
     if (await isBlocked(user.email)) {
-      throw new Error(
-        'Demasiados intentos fallidos. Por favor, inténtelo de nuevo más tarde.'
-      );
+      throw new Error('Demasiados intentos fallidos. Inténtelo más tarde.');
     }
 
-    // Obtener las credenciales del usuario desde el repositorio
-    const credential = await AuthRepository.getUserPassword(user.email);
-    if (!credential || !credential[0]) {
-      // Incrementar los intentos fallidos en Redis si el usuario no existe
+    // Obtener credenciales y dispositivos en una sola consulta
+    const credential = await AuthRepository.getUserWithDevices(user.email);
+    if (!credential || !credential.user) {
       await incrementFailedAttempts(user.email);
-      throw new Error('Usuario no encontrado');
+      throw new Error('Credenciales inválidas');
     }
-    const acesCredential = credential[0];
 
-    // Crear un objeto con los datos relevantes del usuario para Redis
-    const userData: RedisInterface = {
-      id: acesCredential.id,
-      name: acesCredential.name,
-      email: user.email,
-      blockUser: (await isBlocked(user.email)) ? 1 : 0,
-    };
+    const { user: userDataDb, devicesDb } = credential;
 
-    // Validar la contraseña ingresada con la almacenada
-    const isValid = await comparePassword(
-      user.password,
-      acesCredential.password
-    );
-    if (!isValid) {
-      // Incrementar los intentos fallidos en Redis si la contraseña es incorrecta
+    // Validar la contraseña
+    if (!(await comparePassword(user.password, userDataDb.password))) {
       await incrementFailedAttempts(user.email);
-      throw new Error('Contraseña incorrecta');
+      throw new Error('Credenciales inválidas');
     }
 
-    // Reiniciar los intentos fallidos tras una autenticación exitosa
+    // Verificar si el usuario tiene 2FA activado
+    const has2FA = await AuthRepository.has2FAEnabled(userDataDb.id);
+    if (has2FA) {
+      if (!user.twoFactorCode)
+        throw new Error(
+          'Se requiere código de autenticación de Google Authenticator'
+        );
+
+      const isValid2FA = await verify2FACode(userDataDb.id, user.twoFactorCode);
+      if (!isValid2FA) throw new Error('Código de autenticación inválido');
+    }
+
+    // Si pasó la autenticación, resetear intentos fallidos
     await resetFailedAttempts(user.email);
 
-    const devicesDb = await AuthRepository.getDevices(acesCredential.id);
-
+    // Si el usuario ya tiene 3 dispositivos registrados, eliminar el más antiguo
     if (devicesDb.length >= 3) {
-      // Si ya tiene 3 dispositivos registrados, eliminar el más antiguo
       await AuthRepository.deleteDevice(devicesDb[0].id);
     }
 
-    // Verificar si el dispositivo ya existe en la base de datos
+    // Crear objeto de usuario para Redis
+    const userData: RedisInterface = {
+      id: userDataDb.id,
+      name: userDataDb.name,
+      email: user.email,
+      blockUser: 0,
+    };
+
+    // Verificar si el dispositivo ya está registrado
     const existingDevice = devicesDb.find(
       (d) =>
         d.device_name === device.device_name &&
         d.ip_address === device.ip_address
     );
 
+    // Si el dispositivo es nuevo, requiere verificación
     if (!existingDevice) {
-      const data: EmailsInterface = {
-        email: user.email,
-        variables: {
-          name: acesCredential.name,
-          device: device.device_name,
-          code: generateCode(6),
-        },
-        subject: 'Verificación de Dispositivo Nuevo',
-        template: 'newDispositivo.html',
-      };
-      // Nuevo dispositivo detectado, requerir verificación manual (correo o código de verificación)
+      const verificationCode = generateCode(6);
       await AuthRepository.addDevice({
         ...device,
         user_id: userData.id,
         autorizad: 'INHAUTORICE', // NO autorizado por defecto
       });
 
-      await sendEmails(data);
-    }
-
-    const lastLocation =
-      devicesDb.length > 0 ? devicesDb[devicesDb.length - 1].location : null;
-    // Verificar si el usuario intenta acceder desde un país diferente
-    if (lastLocation && lastLocation !== device.location) {
-      const data: EmailsInterface = {
+      await sendEmails({
         email: user.email,
         variables: {
-          name: acesCredential.name,
+          name: userDataDb.name,
+          device: device.device_name,
+          code: verificationCode,
+        },
+        subject: 'Verificación de Dispositivo Nuevo',
+        template: 'newDispositivo.html',
+      });
+    }
+
+    // Verificar si la ubicación es diferente a la última registrada
+    const lastLocation = devicesDb.length
+      ? devicesDb[devicesDb.length - 1].location
+      : null;
+    if (lastLocation && lastLocation !== device.location) {
+      await revokeAllTokens(userDataDb.id);
+
+      await sendEmails({
+        email: user.email,
+        variables: {
+          name: userDataDb.name,
           country: device.location,
           code: generateCode(6),
         },
         subject: 'Verificación de Inicio de Sesión en Otro País',
         template: 'blockDevice.html',
-      };
-
-      await sendEmails(data);
+      });
 
       throw new Error(
         'Intento de acceso desde una ubicación desconocida. Cuenta bloqueada.'
       );
     }
 
-    // Generar un nuevo token JWT
+    // Generar y guardar el token en Redis
     const token = generateTokens(userData.id, userData.email, userData.name);
+    await saveTokenToRedis(userDataDb.id, user.email, token.accessToken);
 
-    // Guardar el token en Redis
-    await saveTokenToRedis(user.email, token.accessToken);
-
-    // Retornar el token generado
     return token;
   } catch (error) {
-    console.error('Error al generar el token:', error);
+    console.error('Error en authService:', error);
     throw error;
   }
 };

@@ -13,6 +13,7 @@ CREATE TABLE users (
     location VARCHAR(255), -- Ubicación del usuario (ciudad/país o coordenadas)
     account_status ENUM('ACTIVE', 'INACTIVE', 'SUSPENDED') DEFAULT 'ACTIVE', -- Estado de la cuenta
     registered_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- Fecha de registro
+    two_factor_secret VARCHAR(64), -- Clave secreta de 2FA
 );
 
 -- Tabla para registrar los dispositivos en los que se inicia sesión

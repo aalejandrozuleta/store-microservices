@@ -1,10 +1,12 @@
 export class AuthDto {
   private _email: string;
   private _password: string;
+  private _twoFactorCode?: string;
 
-  constructor(email: string, password: string) {
+  constructor(email: string, password: string, twoFactorCode?: string) {
     this._email = email;
     this._password = password;
+    this._twoFactorCode = twoFactorCode;
   }
 
   /**
@@ -13,6 +15,14 @@ export class AuthDto {
    */
   public get email(): string {
     return this._email;
+  }
+
+  /**
+   * Getter twoFactorCode
+   * @return {string | undefined}
+   */
+  public get twoFactorCode(): string | undefined {
+    return this._twoFactorCode;
   }
 
   /**
@@ -37,5 +47,13 @@ export class AuthDto {
    */
   public set password(value: string) {
     this._password = value;
+  }
+
+  /**
+   * Setter twoFactorCode
+   * @param {string | undefined} value
+   */
+  public set twoFactorCode(value: string | undefined) {
+    this._twoFactorCode = value;
   }
 }

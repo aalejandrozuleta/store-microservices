@@ -7,14 +7,31 @@ import { authService } from '@services/user/auth.service';
 import { getDeviceInfo } from '@utils/UAparse/getDeviceInfo';
 import { Request, Response } from 'express';
 
+/**
+ * Controlador de autenticación para manejar el inicio de sesión de usuarios.
+ *
+ * Este controlador realiza las siguientes acciones:
+ * - Verifica intentos fallidos de inicio de sesión.
+ * - Valida un reCAPTCHA si se superan los intentos permitidos.
+ * - Autentica al usuario con sus credenciales.
+ * - Registra la información del dispositivo.
+ * - Devuelve un token JWT si la autenticación es exitosa.
+ *
+ * @param {Request} req - Solicitud HTTP que contiene el correo electrónico, contraseña y, si es necesario, el token de reCAPTCHA.
+ * @param {Response} res - Respuesta HTTP con el estado de autenticación y el token generado.
+ */
+
 export const authController = async (req: Request, res: Response) => {
   try {
-    const user = req.body as Pick<UserInterface, 'email' | 'password'>;
+    const user = req.body as Pick<
+      UserInterface,
+      'email' | 'password' | 'twoFactorCode'
+    >;
     const devices = await getDeviceInfo(req);
 
     // Verificar intentos fallidos en Redis
     const failedAttempts = await getFailedAttempts(user.email);
-    if (failedAttempts >= 3) {
+    if (failedAttempts >= 2) {
       const { recaptchaToken } = req.body;
       const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
       if (!isRecaptchaValid) {

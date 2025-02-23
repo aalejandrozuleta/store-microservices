@@ -82,6 +82,15 @@ export interface UserInterface {
    * @type {'ACTIVE' | 'INACTIVE' | 'SUSPENDED'}
    */
   accountStatus: 'ACTIVE' | 'INACTIVE' | 'SUSPENDED';
+
+  /**
+   * Código de 2FA del usuario.
+   *
+   * Este campo contiene el código de 2FA del usuario, si está habilitado.
+   *
+   * @type {string}
+   */
+  twoFactorCode?: string;
 }
 
 /**
