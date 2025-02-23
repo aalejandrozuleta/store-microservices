@@ -9,7 +9,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
   try {
     const { refreshToken } = req.body;
     if (!refreshToken) {
-      return res.status(400).json({ message: 'Refresh Token is required' });
+      res.status(400).json({ message: 'Refresh Token is required' });
     }
 
     // Decodificar el Refresh Token
@@ -18,7 +18,7 @@ export const refreshAccessToken = async (req: Request, res: Response) => {
     // Obtener el Refresh Token almacenado en Redis
     const storedToken = await getRefreshTokenFromRedis(decoded.email);
     if (!storedToken || storedToken !== refreshToken) {
-      return res.status(403).json({ message: 'Invalid Refresh Token' });
+      res.status(403).json({ message: 'Invalid Refresh Token' });
     }
 
     // Generar nuevos tokens

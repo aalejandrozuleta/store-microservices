@@ -46,7 +46,7 @@ export const authController = async (req: Request, res: Response) => {
       const { recaptchaToken } = req.body;
       const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
       if (!isRecaptchaValid) {
-        return res.status(403).json({ error: 'Recaptcha inválido' });
+        res.status(403).json({ error: 'Recaptcha inválido' });
       }
     }
 
@@ -73,6 +73,8 @@ export const authController = async (req: Request, res: Response) => {
     });
 
     // Se devuelve una respuesta de error con el código de estado 500 y el mensaje de error
-    res.status(500).json({ error: errorMessage });
+    res
+      .status(500)
+      .json({ error: errorMessage, message: 'Error al iniciar sesión' });
   }
 };
