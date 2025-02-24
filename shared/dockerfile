@@ -10,6 +10,9 @@ COPY package*.json ./
 # Instalar todas las dependencias, incluyendo las de desarrollo
 RUN npm install
 
+# Instalar bcrypt de forma específica antes de instalar todas las dependencias
+RUN npm install bcrypt --build-from-source
+
 # Copiar todo el código fuente al contenedor
 COPY . .
 

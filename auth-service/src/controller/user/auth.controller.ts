@@ -8,41 +8,30 @@ import { getDeviceInfo } from '@utils/UAparse/getDeviceInfo';
 import { Request, Response } from 'express';
 
 /**
- * Controlador de autenticación de usuarios.
- * Este controlador maneja la lógica para autenticar a un usuario basándose
- * en su correo electrónico y contraseña, además de verificar intentos fallidos
- * y validar el reCAPTCHA si es necesario.
+ * Controlador de autenticación para manejar el inicio de sesión de usuarios.
  *
- * @param req - Objeto de solicitud que contiene el cuerpo de la petición
- *   - email: El correo electrónico del usuario
- *   - password: La contraseña del usuario
- *   - recaptchaToken: (Opcional) Token de reCAPTCHA para validación
+ * Este controlador realiza las siguientes acciones:
+ * - Verifica intentos fallidos de inicio de sesión.
+ * - Valida un reCAPTCHA si se superan los intentos permitidos.
+ * - Autentica al usuario con sus credenciales.
+ * - Registra la información del dispositivo.
+ * - Devuelve un token JWT si la autenticación es exitosa.
  *
- * @param res - Objeto de respuesta para enviar el resultado al cliente
- *
- * @returns Envía una respuesta HTTP al cliente basada en el resultado del proceso de autenticación.
- *
- * 1. Extrae las credenciales de usuario (email y password) del cuerpo de la solicitud.
- * 2. Obtiene información del dispositivo del que proviene la solicitud.
- * 3. Verifica el número de intentos fallidos de autenticación para el email proporcionado en Redis.
- * 4. Si el número de intentos fallidos es mayor o igual a 3, verifica la validez del token de reCAPTCHA.
- * 5. Si el token de reCAPTCHA es inválido, responde con un error 403 (Prohibido).
- * 6. Si el reCAPTCHA es válido o los intentos fallidos son menores a 3, crea un `AuthDto` para el usuario.
- * 7. Llama al servicio de autenticación para generar un token de autenticación utilizando `authService`.
- * 8. Registra un mensaje de éxito en el logger, incluyendo el email del usuario.
- * 9. Responde con un código de estado 201 y el token de autenticación.
- * 10. Captura y maneja los errores de todo el proceso:
- *    - Registra el error en el logger, incluyendo el email del usuario y el mensaje de error.
- *    - Responde con un código de estado 500 y el mensaje de error.
+ * @param {Request} req - Solicitud HTTP que contiene el correo electrónico, contraseña y, si es necesario, el token de reCAPTCHA.
+ * @param {Response} res - Respuesta HTTP con el estado de autenticación y el token generado.
  */
+
 export const authController = async (req: Request, res: Response) => {
   try {
-    const user = req.body as Pick<UserInterface, 'email' | 'password'>;
+    const user = req.body as Pick<
+      UserInterface,
+      'email' | 'password' | 'twoFactorCode'
+    >;
     const devices = await getDeviceInfo(req);
 
     // Verificar intentos fallidos en Redis
     const failedAttempts = await getFailedAttempts(user.email);
-    if (failedAttempts >= 3) {
+    if (failedAttempts >= 2) {
       const { recaptchaToken } = req.body;
       const isRecaptchaValid = await verifyRecaptcha(recaptchaToken);
       if (!isRecaptchaValid) {
