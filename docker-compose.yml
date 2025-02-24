@@ -66,7 +66,6 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./shared:/app  # Monta el código del servicio Shared
-      - /app/node_modules  # Monta un volumen para node_modules para evitar sobrescritura
     ports:
       - 4001:4001  # Expone el puerto 4001 para el servicio Shared
     networks:

@@ -108,7 +108,7 @@ export class AuthRepository {
    * @returns {Promise<string | null>} La clave secreta o null si no está registrada.
    */
   static async get2FASecret(userId: number) {
-    const sql = 'SELECT two_fa_secret FROM users WHERE id = ?';
+    const sql = 'SELECT two_factor_secret FROM users WHERE id = ?';
     const [rows]: [RowDataPacket[], FieldPacket[]] = await db.query(sql, [
       userId,
     ]);
@@ -117,7 +117,7 @@ export class AuthRepository {
 
   // Verificar si el usuario tiene 2FA habilitado
   static async has2FAEnabled(userId: number) {
-    const sql = 'SELECT two_fa_secret FROM users WHERE id = ?';
+    const sql = 'SELECT two_factor_secret FROM users WHERE id = ?';
     const [rows]: [RowDataPacket[], FieldPacket[]] = await db.query(sql, [
       userId,
     ]);

@@ -28,8 +28,6 @@ export const authService = async (
   device: UserDevicesInterface
 ) => {
   try {
-    console.log('user', user);
-
     // Verificar si el usuario está bloqueado por intentos fallidos
     if (await isBlocked(user.email)) {
       throw new Error('Demasiados intentos fallidos. Inténtelo más tarde.');
