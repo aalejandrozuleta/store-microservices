@@ -12,7 +12,7 @@ export class AuthRepository {
    */
   static async getUserWithDevices(email: string) {
     const sql = `
-      SELECT u.id, u.name, u.password, d.id as device_id, d.device_name, d.ip_address, 
+      SELECT u.id, u.name, u.password, u.role, d.id as device_id, d.device_name, d.ip_address, 
              d.user_agent, d.location, d.login_time
       FROM users u
       LEFT JOIN user_devices d ON u.id = d.user_id
@@ -31,6 +31,7 @@ export class AuthRepository {
       id: rows[0].id,
       name: rows[0].name,
       password: rows[0].password,
+      role: rows[0].role,
     };
 
     const devicesDb = rows
@@ -86,19 +87,6 @@ export class AuthRepository {
   static async deleteDevice(deviceId: number) {
     const sql = 'DELETE FROM user_devices WHERE id = ?';
     await db.query(sql, [deviceId]);
-  }
-
-  /**
-   * Guarda la clave secreta de 2FA para un usuario.
-   *
-   * @param {number} userId - ID del usuario.
-   * @param {string} secret - Clave secreta de 2FA.
-   * @returns {Promise<void>}
-   */
-
-  static async save2FASecret(userId: number, secret: string) {
-    const sql = 'UPDATE users SET two_fa_secret = ? WHERE id = ?';
-    await db.query(sql, [secret, userId]);
   }
 
   /**

@@ -2,17 +2,22 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-export const generateTokens = (userId: number, email: string, name: string) => {
+export const generateTokens = (
+  userId: number,
+  email: string,
+  name: string,
+  role: string
+) => {
   const secret = process.env.JWT_SECRET;
   const refreshSecret = process.env.JWT_REFRESH_SECRET;
   const accessTokenExpiresIn = process.env.JWT_EXPIRES_IN || '15m';
-  const refreshTokenExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
+  const refreshTokenExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || '1d';
 
   if (!secret || !refreshSecret) {
     throw new Error('JWT secrets are missing in environment variables.');
   }
 
-  const payload = { id: userId, name, email };
+  const payload = { id: userId, name, email, role: role };
 
   const accessToken = jwt.sign(payload, secret, {
     expiresIn: accessTokenExpiresIn,

@@ -4,6 +4,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
+import checkDb from './healtDb';
 
 export const app = express();
 
@@ -55,15 +56,18 @@ if (isNaN(Number(PORT))) {
   process.exit(1);
 }
 
-try {
-  app.listen(PORT, () => {
-    console.info(
-      `Servidor gateway en el puerto http://localhost:${PORT}` // Muestra en consola que el servidor está corriendo
+checkDb()
+  .then(() => {
+    const PORT: string | number = process.env.PORT || ''; // Define el puerto del servidor (por defecto desde .env)
+    app.listen(PORT, () => {
+      console.info(
+        `Servidor gateway corriendo en el puerto http://localhost:${PORT}` // Muestra en consola que el servidor está corriendo
+      );
+    });
+  })
+  .catch((error: string) => {
+    console.error(
+      'No se pudo iniciar el servidor debido a un error en la base de datos:', // Mensaje de error si no se puede conectar a la base de datos
+      error
     );
   });
-} catch (error) {
-  console.error(
-    'No se pudo iniciar el servidor debido a un error:', // Mensaje de error si no se puede iniciar el servidor
-    error
-  );
-}

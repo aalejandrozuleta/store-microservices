@@ -1,6 +1,7 @@
 import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
-import { AuthRepository } from '@repositories/user/auth.repository';
+import { TwoFactorRepository } from '@repositories/user/2fa.repository';
+import { TwoFactorDto } from '@dto/user/2fa.dto';
 
 /**
  * Genera una clave secreta para la autenticación en dos pasos (2FA) y devuelve un código QR para configurarla.
@@ -11,22 +12,27 @@ import { AuthRepository } from '@repositories/user/auth.repository';
  * @throws {Error} Si no se puede generar la URL para el código QR.
  */
 
-export const generate2FASecret = async (userId: number, email: string) => {
-  // Generar clave secreta
-  const secret = speakeasy.generateSecret({
-    name: `Auth Service - ${email}`,
-  });
+export const generate2FASecret = async (user: TwoFactorDto) => {
+  try {
+    // Generar clave secreta para el usuario
+    const secret = speakeasy.generateSecret({
+      name: `Auth Service - ${user.email}`,
+    });
 
-  // Verificar que otpauth_url no sea undefined
-  if (!secret.otpauth_url) {
-    throw new Error('No se pudo generar la URL para el código QR');
+    // Validar que la URL del OTP sea válida
+    if (!secret.otpauth_url) {
+      throw new Error('No se pudo generar la URL para el código QR');
+    }
+
+    // Guardar la clave secreta en la base de datos
+    await TwoFactorRepository.save2FASecret(user.id, secret.base32);
+
+    // Generar código QR en base64
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
+
+    return { secret: secret.base32, qrCodeUrl };
+  } catch (error) {
+    console.error('Error en twoFactorService:', error);
+    throw new Error('No se pudo generar el código de 2FA');
   }
-
-  // Guardar la clave secreta en la base de datos
-  await AuthRepository.save2FASecret(userId, secret.base32);
-
-  // Generar código QR
-  const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);
-
-  return { secret: secret.base32, qrCodeUrl };
 };

@@ -6,7 +6,7 @@ export const saveTokenToRedis = async (
   refreshToken: string
 ) => {
   try {
-    const key = `refreshToken:${userId}:${deviceId}`;
+    const key = `accessToken:${deviceId}`;
     const expiration = parseInt(
       process.env.REDIS_REFRESH_EXPIRATION || '604800'
     ); // 7 días

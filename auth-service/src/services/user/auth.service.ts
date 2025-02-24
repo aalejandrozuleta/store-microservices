@@ -73,6 +73,7 @@ export const authService = async (
       id: userDataDb.id,
       name: userDataDb.name,
       email: user.email,
+      role: userDataDb.role,
       blockUser: 0,
     };
 
@@ -128,7 +129,12 @@ export const authService = async (
     }
 
     // Generar y guardar el token en Redis
-    const token = generateTokens(userData.id, userData.email, userData.name);
+    const token = generateTokens(
+      userData.id,
+      userData.email,
+      userData.name,
+      userData.role
+    );
     await saveTokenToRedis(userDataDb.id, user.email, token.accessToken);
 
     return token;
