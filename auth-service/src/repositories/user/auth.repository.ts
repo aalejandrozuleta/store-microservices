@@ -1,5 +1,4 @@
 import db from '@config/mysqlDb';
-import { UserDevicesInterface } from '@interfaces/user/user.interface';
 import { FieldPacket, RowDataPacket } from 'mysql2';
 
 export class AuthRepository {
@@ -58,27 +57,6 @@ export class AuthRepository {
   }
 
   /**
-   * Añade un nuevo dispositivo a la lista de dispositivos del usuario.
-   *
-   * @param {UserDevicesInterface} device - La información del dispositivo.
-   * @returns {Promise<void>} Una promesa que se resuelve cuando se inserta el dispositivo.
-   */
-  static async addDevice(device: UserDevicesInterface) {
-    const sql = `
-      INSERT INTO user_devices (user_id, device_name, ip_address, user_agent, location) 
-      VALUES (?, ?, ?, ?, ?)
-    `;
-    const values = [
-      device.user_id,
-      device.device_name,
-      device.ip_address,
-      device.user_agent,
-      device.location,
-    ];
-    await db.query(sql, values);
-  }
-
-  /**
    * Elimina un dispositivo por su ID.
    *
    * @param {number} deviceId - ID del dispositivo a eliminar.
@@ -87,20 +65,6 @@ export class AuthRepository {
   static async deleteDevice(deviceId: number) {
     const sql = 'DELETE FROM user_devices WHERE id = ?';
     await db.query(sql, [deviceId]);
-  }
-
-  /**
-   * Obtiene la clave secreta de 2FA de un usuario.
-   *
-   * @param {number} userId - ID del usuario.
-   * @returns {Promise<string | null>} La clave secreta o null si no está registrada.
-   */
-  static async get2FASecret(userId: number) {
-    const sql = 'SELECT two_factor_secret FROM users WHERE id = ?';
-    const [rows]: [RowDataPacket[], FieldPacket[]] = await db.query(sql, [
-      userId,
-    ]);
-    return rows.length ? rows[0].two_fa_secret : null;
   }
 
   // Verificar si el usuario tiene 2FA habilitado
