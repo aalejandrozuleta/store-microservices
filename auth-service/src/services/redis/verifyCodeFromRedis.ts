@@ -13,14 +13,15 @@ export const verifyCodeFromRedis = async (
   code: string
 ): Promise<boolean> => {
   try {
-    const storedCode = await clientRedis.get(`verification_code:${email}`);
+    const key = `verification_code:${email}`;
+    const storedCode = await clientRedis.get(key);
 
     if (!storedCode || storedCode !== code) {
       return false;
     }
 
     // Eliminar el código después de la validación para evitar reutilización
-    await clientRedis.del(`verification_code:${email}`);
+    // await clientRedis.del(`verification_code:${email}`);
 
     return true;
   } catch (error) {

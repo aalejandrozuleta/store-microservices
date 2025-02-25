@@ -25,7 +25,6 @@ CREATE TABLE user_devices (
     user_agent TEXT NOT NULL, -- Información del navegador y sistema operativo
     location VARCHAR(255), -- Ubicación aproximada del inicio de sesión
     login_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Fecha y hora del inicio de sesión
-    autorizad ENUM('AUTORICE', 'INHAUTORICE') DEFAULT 'INHAUTORICE', -- Indica si el dispositivo ha sido autorizado o no
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE -- FK al usuario
 );
 

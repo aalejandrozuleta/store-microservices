@@ -87,3 +87,6 @@ routerUser.post('/auth', authValidator, authController);
 
 import { refreshAccessToken } from '@controller/user/refreshAccessToken';
 routerUser.post('/refresh', refreshAccessToken);
+
+import { verifyLoginController } from '@controller/user/verifyLogin.controller';
+routerUser.post('/verifyLogin', verifyLoginController);

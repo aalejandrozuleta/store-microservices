@@ -30,8 +30,9 @@ export const verifyLoginService = async (
     );
     await saveTokenToRedis(userData[0].id, data.email, token.accessToken);
 
-    await GeneralUserRepository.addDevice(device);
+    device.user_id = userData[0].id;
 
+    await GeneralUserRepository.addDevice(device);
     return token;
   } catch (error) {
     console.error(error);

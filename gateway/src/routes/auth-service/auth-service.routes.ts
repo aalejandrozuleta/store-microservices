@@ -8,6 +8,7 @@ routerAuthService.use('/register', userController);
 routerAuthService.use('/auth', userController);
 routerAuthService.use('/refresh', userController);
 routerAuthService.use('/logout', userController);
+routerAuthService.use('/verifyLogin', userController);
 
 // administrador
 
