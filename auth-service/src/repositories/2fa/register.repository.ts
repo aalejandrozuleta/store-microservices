@@ -1,6 +1,6 @@
 import db from '@config/mysqlDb';
 
-export class TwoFactorRepository {
+export class TwoFactorRegisterRepository {
   /**
    * Guarda la clave secreta de 2FA para un usuario.
    *

@@ -1,7 +1,7 @@
 import speakeasy from 'speakeasy';
 import QRCode from 'qrcode';
-import { TwoFactorRepository } from '@repositories/user/2fa.repository';
-import { TwoFactorDto } from '@dto/user/2fa.dto';
+import { TwoFactorRegisterRepository } from '@repositories/2fa/register.repository';
+import { TwoFactorDto } from '@dto/2fa/register.dto';
 
 /**
  * Genera una clave secreta para la autenticación en dos pasos (2FA) y devuelve un código QR para configurarla.
@@ -25,7 +25,7 @@ export const generate2FASecret = async (user: TwoFactorDto) => {
     }
 
     // Guardar la clave secreta en la base de datos
-    await TwoFactorRepository.save2FASecret(user.id, secret.base32);
+    await TwoFactorRegisterRepository.save2FASecret(user.id, secret.base32);
 
     // Generar código QR en base64
     const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url);

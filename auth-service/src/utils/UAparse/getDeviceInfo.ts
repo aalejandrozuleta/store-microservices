@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { UAParser } from 'ua-parser-js';
-import { UserDevicesInterface } from '@interfaces/user.interface';
+import { UserDevicesInterface } from '@interfaces/user/user.interface';
 import { Request } from 'express';
 
 /**

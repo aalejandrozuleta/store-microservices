@@ -1,5 +1,5 @@
 import db from '@config/mysqlDb';
-import { UserDevicesInterface } from '@interfaces/user.interface';
+import { UserDevicesInterface } from '@interfaces/user/user.interface';
 import { FieldPacket, RowDataPacket } from 'mysql2';
 
 export class AuthRepository {

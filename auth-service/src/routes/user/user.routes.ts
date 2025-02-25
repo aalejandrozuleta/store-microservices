@@ -87,6 +87,3 @@ routerUser.post('/auth', authValidator, authController);
 
 import { refreshAccessToken } from '@controller/user/refreshAccessToken';
 routerUser.post('/refresh', refreshAccessToken);
-
-import { twoFactorController } from '@controller/user/2fa.controller';
-routerUser.post('/2fa', twoFactorController);

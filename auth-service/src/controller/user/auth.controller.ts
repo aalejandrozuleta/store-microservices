@@ -2,7 +2,7 @@ import { logger } from '@config/logger';
 import { AuthDto } from '@dto/user/auth.dto';
 import { verifyRecaptcha } from '@security/recaptcha';
 import { getFailedAttempts } from '@services/redis/getFailedAttempts';
-import { UserInterface } from '@interfaces/user.interface';
+import { UserInterface } from '@interfaces/user/user.interface';
 import { authService } from '@services/user/auth.service';
 import { getDeviceInfo } from '@utils/UAparse/getDeviceInfo';
 import { Request, Response } from 'express';

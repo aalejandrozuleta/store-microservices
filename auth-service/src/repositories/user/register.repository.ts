@@ -1,6 +1,6 @@
 import { RegisterDto } from '@dto/user/register.dto';
 import db from '@config/mysqlDb';
-import { UserDevicesInterface } from '@interfaces/user.interface';
+import { UserDevicesInterface } from '@interfaces/user/user.interface';
 import { ResultSetHeader } from 'mysql2';
 
 /**

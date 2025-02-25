@@ -3,7 +3,7 @@ import { generateTokens } from '@security/jwt/generateToken';
 import { verifyRefreshToken } from '@security/jwt/refreshToken';
 import { getRefreshTokenFromRedis } from '@services/redis/getRefreshTokenFromRedis';
 import { saveTokenToRedis } from '@services/redis/saveTokenToRedis';
-import { DecodedTokenInterface } from '@interfaces/decode.interface';
+import { DecodedTokenInterface } from '@interfaces/jwt/decode.interface';
 
 export const refreshAccessToken = async (req: Request, res: Response) => {
   try {

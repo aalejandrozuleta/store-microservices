@@ -1,6 +1,6 @@
 import { logger } from '@config/logger';
 import { RegisterDto } from '@dto/user/register.dto';
-import { UserInterface } from '@interfaces/user.interface';
+import { UserInterface } from '@interfaces/user/user.interface';
 import { registerService } from '@services/user/register.service';
 import { getDeviceInfo } from '@utils/UAparse/getDeviceInfo';
 import { Request, Response } from 'express';

@@ -3,8 +3,8 @@ import { incrementFailedAttempts } from '@services/redis/incrementFailedAttempts
 import { isBlocked } from '@services/redis/isBlocked';
 import { resetFailedAttempts } from '@services/redis/resetFailedAttempts';
 import { saveTokenToRedis } from '@services/redis/saveTokenToRedis';
-import { RedisInterface } from '@interfaces/redis.interface';
-import { UserDevicesInterface } from '@interfaces/user.interface';
+import { RedisInterface } from '@interfaces/redis/redis.interface';
+import { UserDevicesInterface } from '@interfaces/user/user.interface';
 import { AuthRepository } from '@repositories/user/auth.repository';
 import { comparePassword } from '@utils/shared/comparePassword';
 import { generateTokens } from '@security/jwt/generateToken';
