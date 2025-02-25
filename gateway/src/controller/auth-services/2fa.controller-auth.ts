@@ -1,5 +1,5 @@
 import { CustomError } from '@helpers/customError';
-import { proxyRequestUser } from '@services/auth-services/proxyUser-auth.service';
+import { proxyRequest2fa } from '@services/auth-services/proxy2fa-auth.service';
 import { Request, Response } from 'express';
 
 /**
@@ -18,10 +18,10 @@ import { Request, Response } from 'express';
  * Devuelve un error con un mensaje claro en la respuesta.
  */
 
-export const userController = async (req: Request, res: Response) => {
+export const twoFaController = async (req: Request, res: Response) => {
   const authServiceUrl = process.env.AUTH_SERVICE_URL || '';
   try {
-    const response = await proxyRequestUser(req, authServiceUrl);
+    const response = await proxyRequest2fa(req, authServiceUrl);
     res.status(response.status).json(response.data);
   } catch (error) {
     console.error(error);

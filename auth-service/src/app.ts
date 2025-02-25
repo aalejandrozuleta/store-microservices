@@ -12,7 +12,7 @@ import { router2fa } from '@routes/2fa/2fa.routes';
 //  Usar rutas
 app.use('/auth/administrator', routerAdministrator);
 app.use('/auth/user', routerUser);
-app.use('auth/2fa', router2fa);
+app.use('/auth/2fa', router2fa);
 app.use(swaggerRouter);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
