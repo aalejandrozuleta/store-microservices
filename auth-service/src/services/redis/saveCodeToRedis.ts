@@ -9,12 +9,12 @@ import { clientRedis } from '@config/redisDb';
  */
 
 export const saveCodeToRedis = async (
-  userId: string,
+  email: string,
   code: string,
   expiresIn: number = 300
 ): Promise<void> => {
   try {
-    const key = `2fa:${userId}`;
+    const key = `verification_code:${email}`;
 
     // Guardar el código en Redis con una expiración predeterminada de 5 minutos (300 segundos)
     await clientRedis.set(key, code, { EX: expiresIn });

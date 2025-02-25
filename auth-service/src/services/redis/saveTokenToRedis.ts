@@ -2,11 +2,11 @@ import { clientRedis } from '@config/redisDb';
 
 export const saveTokenToRedis = async (
   userId: number,
-  deviceId: string,
+  email: string,
   refreshToken: string
 ) => {
   try {
-    const key = `accessToken:${deviceId}`;
+    const key = `accessToken:${email}`;
     const expiration = parseInt(
       process.env.REDIS_REFRESH_EXPIRATION || '604800'
     ); // 7 días

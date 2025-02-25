@@ -11,7 +11,7 @@ import { generateCode } from '@helpers/genereteCode';
 import { sendEmails } from '@utils/shared/sendEmails';
 import { saveCodeToRedis } from '@services/redis/saveCodeToRedis';
 
-const MAX_DEVICES = parseInt(process.env.MAX_DEVICES || '3', 10);
+const MAX_DEVICES = parseInt(process.env.MAX_DEVICES || '4', 10);
 
 /**
  * Servicio de autenticación para validar credenciales, gestionar dispositivos y generar tokens JWT.
