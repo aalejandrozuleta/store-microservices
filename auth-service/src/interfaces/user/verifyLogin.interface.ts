@@ -1,4 +1,4 @@
 export interface verifyLoginInterface {
-  email: string;
+  token: string;
   code: string;
 }

@@ -73,6 +73,6 @@ export class AuthRepository {
     const [rows]: [RowDataPacket[], FieldPacket[]] = await db.query(sql, [
       userId,
     ]);
-    return rows.length && rows[0].two_fa_secret ? true : false;
+    return rows.length && rows[0].two_factor_secret ? true : false;
   }
 }

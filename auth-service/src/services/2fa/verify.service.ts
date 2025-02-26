@@ -1,14 +1,14 @@
+import { verify2fa } from '@interfaces/2fa/verify.interface';
 import { UserDevicesInterface } from '@interfaces/user/user.interface';
-import { verifyLoginInterface } from '@interfaces/user/verifyLogin.interface';
 import { GeneralUserRepository } from '@repositories/general/general-user.repository';
+import { verify2FACode } from '@security/2FA/verify2FACode';
 import { generateTokens } from '@security/jwt/generateToken';
 import { getTempTokenFromTempToken } from '@services/redis/getTempTokenToRedis';
 import { saveTokenToRedis } from '@services/redis/saveTokenToRedis';
-import { verifyCodeFromRedis } from '@services/redis/verifyCodeFromRedis';
 
-export const verifyLoginService = async (
-  data: verifyLoginInterface,
-  device: UserDevicesInterface
+export const verify2FAService = async (
+  data: verify2fa,
+  devices: UserDevicesInterface
 ) => {
   try {
     // Validar código en Redis
@@ -18,17 +18,18 @@ export const verifyLoginService = async (
       throw new Error('Se venció el tiempo validación vuelva a intentarlo');
     }
 
-    const isValid = await verifyCodeFromRedis(getUserToken, data.code);
-    if (!isValid) {
-      throw new Error('Código de verificación inválido');
-    }
-
-    // Obtener datos del usuario
     const userData = await GeneralUserRepository.getUserByEmail(getUserToken);
+
     if (!userData) {
       throw new Error('Usuario no encontrado');
     }
 
+    const isValid2FA = await verify2FACode(userData[0].id, data.twoFactorCode);
+    if (!isValid2FA) {
+      throw new Error('Código de autenticación inválido');
+    }
+
+    // Generar tokens
     const token = generateTokens(
       userData[0].id,
       getUserToken,
@@ -37,12 +38,11 @@ export const verifyLoginService = async (
     );
     await saveTokenToRedis(userData[0].id, getUserToken, token.accessToken);
 
-    device.user_id = userData[0].id;
+    devices.user_id = userData[0].id;
 
-    await GeneralUserRepository.addDevice(device);
+    await GeneralUserRepository.addDevice(devices);
     return token;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

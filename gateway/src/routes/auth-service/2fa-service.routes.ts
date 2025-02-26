@@ -10,12 +10,24 @@ import { twoFaController } from '@controller/auth-services/2fa.controller-auth';
 router2fa.use(
   '/register',
   jwtAuthMiddleware,
-  authorizeRoles([
-    'ADMIN',
-    'MODERATOR',
-    'STORE_OWNER',
-    'DELIVERY_OWNER',
-    'USER',
-  ]),
+  // authorizeRoles([
+  //   'ADMIN',
+  //   'MODERATOR',
+  //   'STORE_OWNER',
+  //   'DELIVERY_OWNER',
+  //   'USER',
+  // ]),
+  twoFaController
+);
+
+router2fa.use(
+  '/verify',
+  // authorizeRoles([
+  //   'ADMIN',
+  //   'MODERATOR',
+  //   'STORE_OWNER',
+  //   'DELIVERY_OWNER',
+  //   'USER',
+  // ]),
   twoFaController
 );

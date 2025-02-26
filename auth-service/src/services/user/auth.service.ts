@@ -10,6 +10,7 @@ import { generateTokens } from '@security/jwt/generateToken';
 import { generateCode } from '@helpers/genereteCode';
 import { sendEmails } from '@utils/shared/sendEmails';
 import { saveCodeToRedis } from '@services/redis/saveCodeToRedis';
+import { saveTemporaryTokenToRedis } from '@services/redis/saveTemporaryTokenToRedis';
 
 const MAX_DEVICES = parseInt(process.env.MAX_DEVICES || '4', 10);
 
@@ -63,13 +64,20 @@ export const authService = async (
 
     // Si el usuario tiene 2FA habilitado, requiere verificación
     if (has2FA) {
-      return { requires2FA: true };
+      // Generar un token temporal y guardarlo en Redis
+      const tempToken = generateCode(32); // Puede ser un UUID o string aleatorio
+      await saveTemporaryTokenToRedis(tempToken, user.email, 300); // Expira en 5 min
+      return { requires2FA: true, tempToken: tempToken };
     }
 
     // Si es un nuevo dispositivo o ubicación, enviar código de verificación por correo
     if (isNewDevice || isNewLocation) {
       const verificationCode = generateCode(6);
       await saveCodeToRedis(user.email, verificationCode, 300); // Expira en 5 min
+
+      // Generar un token temporal y guardarlo en Redis
+      const tempToken = generateCode(32); // Puede ser un UUID o string aleatorio
+      await saveTemporaryTokenToRedis(tempToken, user.email, 300); // Expira en 5 min
 
       await sendEmails({
         email: user.email,
@@ -82,7 +90,7 @@ export const authService = async (
         template: 'newDevice.html',
       });
 
-      return { requiresVerification: true };
+      return { requiresVerification: true, tempToken: tempToken };
     }
 
     // Si el usuario ha alcanzado el límite de dispositivos, eliminar el más antiguo
