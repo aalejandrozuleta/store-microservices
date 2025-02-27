@@ -53,17 +53,20 @@ export const authService = async (
     // Verificar si el usuario tiene autenticación en dos pasos (2FA) habilitada
     const has2FA = await AuthRepository.has2FAEnabled(userDataDb.id);
 
-    // Determinar si el dispositivo o la ubicación son nuevos
+    // Determinar si el dispositivo es nuevo verificando varios atributos
     const isNewDevice = !devicesDb.find(
-      (d) => d.device_name === device.device_name
+      (d) =>
+        d.device_name === device.device_name &&
+        d.ip_address === device.ip_address &&
+        d.user_agent.split('/')[0] === device.user_agent.split('/')[0]
     );
-    const lastLocation = devicesDb.length
-      ? devicesDb[devicesDb.length - 1].location
-      : null;
-    const isNewLocation = lastLocation && lastLocation !== device.location;
+
+    const isNewLocation = !devicesDb.some(
+      (d) => d.location === device.location
+    );
 
     // Si el usuario tiene 2FA habilitado, requiere verificación
-    if (has2FA) {
+    if (has2FA && (isNewDevice || isNewLocation)) {
       // Generar un token temporal y guardarlo en Redis
       const tempToken = generateCode(32); // Puede ser un UUID o string aleatorio
       await saveTemporaryTokenToRedis(tempToken, user.email, 300); // Expira en 5 min
