@@ -9,7 +9,7 @@ export const sharedController = async (req: Request, res: Response) => {
     );
   }
   try {
-    const response = await proxyRequest(req, sharedServiceUrl, '');
+    const response = await proxyRequest(req, sharedServiceUrl, '/shared/');
     res.status(response.status).json(response.data);
   } catch (error) {
     res.status(500).json({

@@ -1,4 +1,3 @@
-import { Response } from 'express';
 import dotenv from 'dotenv';
 import { app } from '@config/serverOptions';
 dotenv.config();
@@ -15,7 +14,6 @@ app.use('/auth/user', routerUser);
 app.use('/auth/2fa', router2fa);
 app.use(swaggerRouter);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-app.use((err: any, req: any, res: Response) => {
-  res.status(500).send({ message: err.message });
-});
+// app.use((err: any, req: any, res: Response) => {
+//   res.status(500).send({ message: err.message });
+// });

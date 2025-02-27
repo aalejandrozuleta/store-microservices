@@ -1,16 +1,28 @@
 import axios from 'axios';
 import { Request } from 'express';
 
+// Mapeo de servicios con su prefijo correspondiente
+const routeMappings: Record<string, string> = {
+  auth: '/auth/user',
+  shared: '',
+  '2fa': '/auth/2fa',
+};
+
 export const proxyRequest = async (
   req: Request,
   serviceUrl: string,
-  path: string
+  serviceKey: string
 ) => {
-  // Remueve solo '/api' de la URL original
-  const cleanPath = req.originalUrl.replace('/api', '');
+  let cleanPath = req.originalUrl.replace(/^\/api/, ''); // Eliminar "/api" de la URL
 
-  // Construye la URL final
-  const targetUrl = `${serviceUrl}${cleanPath}`;
+  // Si el servicio tiene un prefijo definido en el mapeo, lo agregamos
+  const prefix = routeMappings[serviceKey] || '';
+  if (prefix && cleanPath.startsWith(prefix)) {
+    cleanPath = cleanPath.replace(prefix, '');
+  }
+
+  // Construir la URL final
+  const targetUrl = `${serviceUrl}${prefix}${cleanPath}`;
 
   console.log('route --------', targetUrl);
 
