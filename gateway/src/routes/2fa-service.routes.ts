@@ -5,18 +5,18 @@ import {
   authorizeRoles,
   jwtAuthMiddleware,
 } from '@middlewares/jwtValidation.middleware';
-import { twoFaController } from '@controller/auth-services/2fa.controller-auth';
+import { twoFaController } from '@controller/2fa.controller';
 
 router2fa.use(
   '/register',
   jwtAuthMiddleware,
-  // authorizeRoles([
-  //   'ADMIN',
-  //   'MODERATOR',
-  //   'STORE_OWNER',
-  //   'DELIVERY_OWNER',
-  //   'USER',
-  // ]),
+  authorizeRoles([
+    'ADMIN',
+    'MODERATOR',
+    'STORE_OWNER',
+    'DELIVERY_OWNER',
+    'USER',
+  ]),
   twoFaController
 );
 
