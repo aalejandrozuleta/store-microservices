@@ -1,4 +1,4 @@
-import { AuthRepository } from '@repositories/user/auth.repository';
+import { General2FARepository } from '@repositories/2fa/general.repository';
 import speakeasy from 'speakeasy';
 
 /**
@@ -11,7 +11,7 @@ import speakeasy from 'speakeasy';
  */
 
 export const verify2FACode = async (userId: number, token: string) => {
-  const secret = await AuthRepository.get2FASecret(userId);
+  const secret = await General2FARepository.get2FASecret(userId);
   if (!secret) {
     throw new Error('La autenticación en dos pasos no está configurada.');
   }

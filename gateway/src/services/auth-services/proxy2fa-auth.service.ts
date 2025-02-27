@@ -30,7 +30,7 @@ export const proxyRequest2fa = async (req: Request, serviceUrl: string) => {
 
     const response = await axios({
       method: req.method,
-      url: `${serviceUrl}/auth/2fa${req.originalUrl.replace('/api/auth', '')}`, // Ajuste de la URL
+      url: `${serviceUrl}/auth/2fa${req.originalUrl.replace('/api/2fa', '')}`, // Ajuste de la URL
       headers,
       data: req.body,
     });

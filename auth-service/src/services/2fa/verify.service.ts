@@ -1,3 +1,4 @@
+import { clientRedis } from '@config/redisDb';
 import { verify2fa } from '@interfaces/2fa/verify.interface';
 import { UserDevicesInterface } from '@interfaces/user/user.interface';
 import { GeneralUserRepository } from '@repositories/general/general-user.repository';
@@ -41,6 +42,7 @@ export const verify2FAService = async (
     devices.user_id = userData[0].id;
 
     await GeneralUserRepository.addDevice(devices);
+    await clientRedis.del(`tempAuthToken:${data.token}`); // Eliminar después de usar
     return token;
   } catch (error) {
     throw error;
