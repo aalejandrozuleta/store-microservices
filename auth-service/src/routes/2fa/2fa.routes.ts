@@ -5,4 +5,5 @@ import { twoFactorRegisterController } from '@controller/2fa/register.controller
 router2fa.post('/register', twoFactorRegisterController);
 
 import { verify2FAController } from '@controller/2fa/verify.controller';
-router2fa.post('/verify', verify2FAController);
+import { validateTwoFactorCode } from '@middleware/2fa/verify.middleware';
+router2fa.post('/verify', validateTwoFactorCode, verify2FAController);

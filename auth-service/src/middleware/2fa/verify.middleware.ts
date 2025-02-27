@@ -3,26 +3,24 @@ import { z } from 'zod';
 import { logger } from '@config/logger';
 
 // Esquema Zod para la validación de datos de registro
-const authSchema = z.object({
-  email: z.string().email({ message: 'El correo electrónico debe ser válido' }),
-
-  password: z
+const verifySchema = z.object({
+  twoFactorCode: z
     .string()
-    .min(8, { message: 'La contraseña debe tener al menos 8 caracteres' })
-    .max(20, { message: 'La contraseña no debe exceder los 20 caracteres' })
-    .regex(/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])/, {
-      message:
-        'La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial',
+    .length(6, {
+      message: 'El código de autenticación debe tener exactamente 6 caracteres',
+    })
+    .regex(/^[a-zA-Z0-9]+$/, {
+      message: 'El código solo puede contener letras y números',
     }),
 });
 
 // Middleware de validación utilizando Zod
-export const authValidator = (
+export const validateTwoFactorCode = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  const result = authSchema.safeParse(req.body);
+  const result = verifySchema.safeParse(req.body);
 
   if (!result.success) {
     logger.warn('Validación fallida', { errors: result.error.errors });

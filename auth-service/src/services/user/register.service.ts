@@ -45,7 +45,6 @@ export const registerService = async (
     // Registramos al usuario en la base de datos con el objeto completo
     const idRegisterUser: number = await RegisterRepository.register(user);
     devices.user_id = idRegisterUser;
-    devices.autorizad = 'AUTORICE';
     RegisterRepository.registerDevices(devices);
 
     // Enviamos un correo electrónico con el enlace de activación

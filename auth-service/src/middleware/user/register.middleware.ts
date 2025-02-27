@@ -39,7 +39,7 @@ export const registerValidator = (
     logger.warn('Validación fallida', { errors: result.error.errors });
     res
       .status(400)
-      .json({ errors: result.error.errors.map((err) => err.message) });
+      .json({ error: result.error.errors.map((err) => err.message) });
   } else {
     req.body = result.data; // Asignamos los datos validados al cuerpo de la solicitud
     next(); // Si la validación es exitosa, pasamos al siguiente middleware
