@@ -9,19 +9,14 @@ import { Request, Response } from 'express';
  */
 export const verify2FAController = async (req: Request, res: Response) => {
   try {
-    console.log('req ----------------------');
-
     const data = req.body as verify2fa;
 
-    console.log('data ----------------------', data);
     const devices = await getDeviceInfo(req);
-    console.log('devices ----------------------', devices);
+
     const token = await verify2FAService(data, devices);
-    console.log('token ----------------------', token);
 
     res.status(201).json({ message: 'User Auth successfully', token: token });
   } catch (error) {
-    console.log(error);
     // Manejo de errores
     const errorMessage =
       error instanceof Error ? error.message : 'Ocurrió un error desconocido';

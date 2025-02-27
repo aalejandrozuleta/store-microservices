@@ -1,15 +1,16 @@
 services:
   # Servicio devcontainer
-  devcontainer:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - .:/app  # Monta el directorio actual en el contenedor
-    networks:
-      - auth-service
-      - gateway
-      - shared
+  
+  # devcontainer:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   volumes:
+  #     - .:/app  # Monta el directorio actual en el contenedor
+  #   networks:
+  #     - auth-service
+  #     - gateway
+  #     - shared
 
   # Servicio Gateway
   gateway:
